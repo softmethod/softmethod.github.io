@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>softmethod</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            --bg-primary: #000000;
+            --bg-secondary: #0a0a0a;
+            --bg-tertiary: #111111;
+            --bg-card: #0f0f0f;
+            --accent-primary: #450517;
+            --accent-secondary: #8b0000;
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1aa;
+            --text-tertiary: #71717a;
+            --border-primary: #1f1f23;
+            --border-secondary: #27272a;
+            --glow-primary: #8b0000;
+            --glow-secondary: #450517;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .app-container.animate-in,
+        #mute-btn.animate-in {
+            opacity: 1;
+        }
+
+        .section {
+            transition: transform 1s ease-out, opacity 1s ease-out;
+        }
+
+        #staffExperience {
+            transition-delay: 0.4s;
+        }
+
+        #mute-btn {
+            background: transparent;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10000;
+            color: #fff;
+            border: 3px solid #8b0000;
+            border-radius: .5rem;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity .5s ease-out, transform 1s ease-out;
+        }
+
+        #mute-btn:hover {
+            background: rgba(139, 0, 0, 0.2);
+            transform: scale(1.1);
+        }
+
+        #bg-start-audio {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100000000;
+            background: #000;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            transition: opacity 0.2s ease-in-out;
+            cursor: pointer;
+            font-size: 15.2px;
+        }
+
+        #bg-start-audio h1 {
+            transition: opacity 0.05s ease-in-out;
+            opacity: 1;
+            color: #8b0000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            overflow-y: hidden;
+            line-height: 1.6;
+            font-size: 14px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('background.jpg') center/cover no-repeat;
+            opacity: 0.15;
+            z-index: -3;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(69, 5, 23, 0.8) 0%,
+                rgba(139, 0, 0, 0.6) 50%,
+                rgba(69, 5, 23, 0.8) 100%);
+            z-index: -2;
+            pointer-events: none;
+            animation: pulse 10s ease-in-out infinite;
+        }
+
+        .app-container {
+            display: flex;
+            width: 100vw;
+            min-height: 100vh;
+            opacity: 0;
+            transition: opacity .5s ease-out, transform 1s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .left-panel {
+            width: 280px;
+            background: rgba(15, 15, 15, 0.95);
+            border-right: 1px solid var(--border-primary);
+            padding: 1.5rem 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            position: fixed;
+            top: 50%;
+            left: 100px;
+            transform: translateY(-50%);
+            height: auto;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 100;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            transition-delay: 0.2s;
+        }
+
+        .panel-header {
+            padding: 0 1.5rem 1rem 1.5rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .panel-header i {
+            font-size: 1rem;
+            color: #8b0000;
+        }
+
+        .panel-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0 8px 8px 0;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .panel-item:hover {
+            background: rgba(139, 0, 0, 0.1);
+            color: var(--text-primary);
+        }
+
+        .panel-item.active {
+            background: rgba(139, 0, 0, 0.2);
+            color: var(--text-primary);
+            font-weight: 600;
+            border-left: 4px solid #8b0000;
+            padding-left: calc(1.5rem - 4px);
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .panel-item.active:hover {
+            background: rgba(139, 0, 0, 0.3);
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-left: 200px;
+        }
+
+        .section {
+            background: rgba(17, 17, 17, 0.95);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            max-width: 1000px;
+            margin: 0 auto 40px auto;
+            width: 100%;
+            min-height: auto;
+            scroll-margin-top: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #450517, #8b0000, #450517);
+            z-index: 1;
+        }
+
+        .section:last-child {
+            margin-bottom: 0;
+        }
+
+        #profileBio {
+            margin-bottom: 100px !important;
+            transition-delay: 0.3s;
+        }
+
+        #profileName {
+            margin-top: -0.3rem;
+        }
+
+        .section-header {
+            justify-content: center;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .section-icon {
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b0000;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .profile-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            margin-bottom: 1.5rem;
+        }
+
+        .profile-border {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #450517, #8b0000, #450517, #8b0000);
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            animation: rotate 8s linear infinite;
+        }
+
+        .profile-image {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 60px rgba(139, 0, 0, 0.5);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .profile-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #450517;
+        }
+
+        .section-bio h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 0;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            margin-top: 0.25rem;
+            margin-bottom: 0.25rem;
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .bio-content {
+            color: #8b0000;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-top: 1.5rem;
+            text-align: center;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .staff-category {
+            margin: 20px auto;
+            max-width: 1000px;
+        }
+
+        .staff-category h3 {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            padding-left: 0;
+            color: #8b0000;
+        }
+
+        .staff-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .server-card {
+            background: rgba(30, 30, 30, 0.9);
+            border: 1px solid rgba(139, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            height: 120px;
+            justify-content: center;
+        }
+
+        .server-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #450517, #8b0000);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .server-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .server-card:hover {
+            border-color: #8b0000;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(139, 0, 0, 0.2);
+        }
+
+        .server-info h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .server-role {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 0.25rem;
+            transition: all 0.3s ease;
+        }
+
+        .server-card:hover .server-role {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+        }
+
+        .server-year {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            margin-top: 0.1rem;
+            margin-bottom: 0.3rem;
+            line-height: 1;
+        }
+
+        .profile-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .bio-links-section {
+            margin-top: 3rem;
+            width: 100%;
+        }
+
+        .bio-links-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .bio-links-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes textGradient {
+            0% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.15;
+            }
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .left-panel {
+                left: 20px;
+                width: 290px;
+            }
+            .main-content {
+                margin-left: 270px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            .left-panel {
+                width: 100%;
+                height: auto;
+                position: relative;
+                top: 0;
+                left: 0;
+                transform: none;
+                max-height: none;
+                margin-bottom: 1rem;
+                border-right: none;
+                border-bottom: 1px solid rgba(139, 0, 0, 0.3);
+                flex-direction: row;
+                justify-content: center;
+                flex-wrap: wrap;
+                padding: 1rem;
+                border-radius: 0;
+            }
+            .panel-item {
+                flex: 1 1 auto;
+                max-width: 150px;
+                justify-content: center;
+                border-left: none;
+                border-radius: 8px;
+                padding-left: 1.5rem;
+            }
+            .panel-item.active {
+                border-left: none;
+                padding-left: 1.5rem;
+            }
+            .main-content {
+                padding: 1rem;
+                margin-left: 0;
+            }
+            .section {
+                max-width: 100%;
+                margin: 20px auto;
+                min-height: auto;
+                padding: 1.5rem;
+            }
+            .staff-grid {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+            .panel-header {
+                display: none;
+            }
+            .bio-links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: transparent;
+            z-index: 1000;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #450517, #8b0000, #450517);
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        ::selection {
+            background: rgba(139, 0, 0, 0.5);
+            color: #ffffff;
+        }
+
+        ::-moz-selection {
+            background: rgba(139, 0, 0, 0.5);
+            color: #ffffff;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="bg-start-audio">
+        <h1>Click Anywhere</h1>
+    </div>
+
+    <audio id="bg-music" loop autoplay>
+        <source src="song.mp3" type="audio/mp3">
+        Il tuo browser non supporta l'elemento audio.
+    </audio>
+
+    <button id="mute-btn"><i class="fa-solid fa-volume-high"></i></button>
+
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar"></div>
+    </div>
+
+    <div class="app-container">
+        <aside class="left-panel">
+            <div class="panel-header" style="justify-content: center;"><i class="fa-solid fa-list"></i></div>
+            <div class="panel-item active" data-section="profileBio">
+                <i class="fa-solid fa-user"></i>
+                <span>Biography</span>
+            </div>
+            <div class="panel-item" data-section="staffExperience">
+                <i class="fa-solid fa-briefcase"></i>
+                <span>Staff Experience</span>
+            </div>
+        </aside>
+
+        <div class="main-content">
+            <section class="section" id="profileBio">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fa-solid fa-user"></i></div>
+                    <span>BIOGRAPHY</span>
+                </div>
+                <div class="hero-content">
+                    <div class="profile-wrapper">
+                        <div class="profile-border"></div>
+                        <div class="profile-image">
+                            <div class="profile-inner" id="profileAvatar"></div>
+                        </div>
+                    </div>
+                    <h1 id="profileName" style="
+                        font-size: clamp(2.5rem, 5vw, 4rem);
+                        font-weight: 900;
+                        background: linear-gradient(
+                            90deg,
+                            #450517 0%,
+                            #8b0000 25%,
+                            #450517 50%,
+                            #8b0000 75%,
+                            #450517 100%
+                        );
+                        background-size: 200% auto;
+                        background-clip: text;
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                        margin-bottom: 0;
+                        letter-spacing: -0.02em;
+                        animation: textGradient 3s linear infinite;
+                        position: relative;
+                        background-position: 0% 50%;
+                    ">softmethod</h1>
+                    <p class="subtitle" id="profileSubtitle"></p>
+                    
+                    <div class="bio-content" id="bioDetailsContent"></div>
+
+                    <div class="bio-links-section">
+                        <h3 class="bio-links-title"><i class="fa-solid fa-link"></i> LINKS</h3>
+                        <div class="bio-links-grid"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="staffExperience">
+                <div class="section-header">
+                    <div class="section-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <span>STAFF EXPERIENCE</span>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        const CONFIG = {
+            profile: {
+                name: "softmethod",
+                avatar: "https://i.ibb.co/cXMGtTgv/avatar.png",
+                subtitle: "Cheat Hunter & Pc Checker",
+                bioContent: 'montegs visual dev',
+            },
+            staffExperience: {
+                discord: [
+                    { serverName: "Revage", role: "DISCORD CURATOR", year: "2023", color: "#DC1E1E" },
+                    { serverName: "Misha Team", role: "DISCORD ADMIN", year: "2024", color: "#DC1E1E" },
+                ],
+                minecraft: [
+                    { serverName: "Revage", role: "Curator & HEAD OF SS", year: "2023-2026", color: "#EC5252" },
+                    { serverName: "CakeWorld", role: "HEAD ADMIN", year: "2025", color: "#8B0000" },
+                    { serverName: "RedBee", role: "Moder & HEAD OF SS", year: "2023", color: "#0000FF" },
+                    { serverName: "BeeMC", role: "ADMIN & HEAD OF SS", year: "2024", color: "#EC5252" },
+                    { serverName: "EasyMoney", role: "Moder", year: "2023", color: "#0000FF" },
+                    { serverName: "ProxWorld (1)", role: "Curator & HEAD OF SS", year: "2024", color: "#EC5252" },
+                    { serverName: "ProxWorld (2)", role: "Senior Mod & cheat hunter", year: "2025", color: "#6A5ACD" },
+                    { serverName: "Cristalix", role: "HELPER", year: "2025", color: "#FFD700" },
+                    { serverName: "CookieWorld", role: "ADMIN", year: "2025", color: "#EC5252" },
+                    { serverName: "SolarCloud", role: "ADMIN", year: "2025", color: "#EC5252" },
+                    { serverName: "PremialClub", role: "OWNER & HEAD OF SS", year: "2024", color: "#8B0000" },
+                    { serverName: "PvpCore", role: "OWNER & HEAD OF SS", year: "2024", color: "#8B0000" },
+                    { serverName: "HightMine", role: "ADMIN & HEAD OF SS", year: "2025", color: "#EC5252" },
+                    { serverName: "HolyWorld", role: "HELPER", year: "2025", color: "#FFD700" },
+                    { serverName: "AgeraPvp", role: "HELPER", year: "2025", color: "#FFD700" },
+                    { serverName: "CloudyLand", role: "Moder", year: "2022", color: "#0000FF" },
+                ]
+            },
+            links: [
+                { name: "Discord", role: "softmethod", icon: "fa-brands fa-discord", color: "#5865F2", link: "https://discord.com/users/851399526945652796" },
+                { name: "NameMC", role: "montegs", icon: "fa-solid fa-network-wired", color: "#FFFFFF", link: "https://ru.namemc.com/profile/montegs.1" },
+                { name: "GunsLol", role: "softmethod", icon: "fa-solid fa-seedling", color: "#8b0000", link: "https://guns.lol/softmethod" },
+                { name: "YouTube", role: "softmethod", icon: "fa-brands fa-youtube", color: "#FF0000", link: "https://www.youtube.com/@BestKzPots" },
+            ]
+        };
+
+        function initializeProfile() {
+            const avatarContainer = document.getElementById('profileAvatar');
+            avatarContainer.innerHTML = `<img src="${CONFIG.profile.avatar}" alt="Profile avatar" style="width:100%;height:100%;object-fit:cover;">`;
+            document.getElementById('profileSubtitle').innerHTML = `<i class="fa-solid fa-magnifying-glass" style="transform: scaleX(-1);color:var(--text-secondary);"></i> ${CONFIG.profile.subtitle}`;
+            document.getElementById('bioDetailsContent').innerHTML = CONFIG.profile.bioContent;
+        }
+
+        function hexToRgba(hex, alpha) {
+            let c = hex.replace('#', '');
+            if (c.length === 3) c = c.split('').map(x => x + x).join('');
+            const bigint = parseInt(c, 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function createCategory(targetSectionId, title, icon, servers) {
+            const section = document.getElementById(targetSectionId);
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'staff-category';
+            categoryDiv.innerHTML = `<h3><i class="${icon}" style="color:#8b0000;"></i> ${title}</h3><div class="staff-grid"></div>`;
+            const grid = categoryDiv.querySelector('.staff-grid');
+
+            servers.forEach(server => {
+                const card = document.createElement('div');
+                card.className = 'server-card';
+                card.addEventListener('click', () => window.open(server.imgurLink, '_blank'));
+
+                const yearHtml = server.year ? `<div class="server-year">${server.year}</div>` : '';
+
+                card.innerHTML = `
+                    <div class="server-info">
+                        <h4>${server.serverName}</h4>
+                        ${yearHtml}
+                        <div class="server-role">${server.role}</div>
+                    </div>
+                `;
+
+                if (server.color) {
+                    const roleEl = card.querySelector('.server-role');
+                    roleEl.style.background = hexToRgba(server.color, 0.1);
+                    roleEl.style.borderColor = hexToRgba(server.color, 0.2);
+                    roleEl.style.color = server.color;
+                }
+                grid.appendChild(card);
+            });
+
+            section.appendChild(categoryDiv);
+        }
+
+        function createGenericCards(targetElement, items) {
+            const container = document.querySelector(targetElement);
+            container.innerHTML = '';
+
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'server-card';
+                card.addEventListener('click', () => window.open(item.link, '_blank'));
+                const cardName = item.name || item.role;
+                card.innerHTML = `
+                    <div class="server-info">
+                        <h4>${item.icon ? `<i class="${item.icon}" style="color:${item.color}"></i>&nbsp;` : ''}${cardName}</h4>
+                        <div class="server-role">${item.role}</div>
+                    </div>
+                `;
+                if (item.color) {
+                    const roleEl = card.querySelector('.server-role');
+                    roleEl.style.background = hexToRgba(item.color, 0.1);
+                    roleEl.style.borderColor = hexToRgba(item.color, 0.2);
+                    roleEl.style.color = item.color;
+                }
+                container.appendChild(card);
+            });
+        }
+
+        function highlightActiveSection() {
+            const sections = document.querySelectorAll('.section');
+            const navItems = document.querySelectorAll('.panel-item');
+            let currentSection = 'profileBio';
+
+            const viewportMiddle = window.scrollY + (window.innerHeight / 2);
+
+            let closestSection = sections[0];
+            let minDistance = Math.abs(viewportMiddle - (sections[0].offsetTop + sections[0].offsetHeight / 2));
+
+            sections.forEach(section => {
+                const sectionMiddle = section.offsetTop + (section.offsetHeight / 2);
+                const distance = Math.abs(viewportMiddle - sectionMiddle);
+
+                if (distance < minDistance) {
+                    minDistance = distance;
+                    closestSection = section;
+                }
+            });
+
+            currentSection = closestSection.id;
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('data-section') === currentSection) {
+                    item.classList.add('active');
+                }
+            });
+
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.querySelector('.scroll-progress-bar').style.width = scrolled + '%';
+        }
+
+        const bgMusic = document.getElementById('bg-music');
+        const muteBtn = document.getElementById('mute-btn');
+        const bgStartAudio = document.getElementById('bg-start-audio');
+        const bgStartAudioH1 = bgStartAudio.querySelector('h1');
+        const appContainer = document.querySelector('.app-container');
+
+        bgMusic.volume = 0.075;
+
+        function playBgAudio() {
+            bgStartAudio.style.pointerEvents = 'none';
+            bgStartAudio.style.opacity = '0';
+            bgStartAudioH1.style.opacity = '0';
+
+            setTimeout(() => {
+                document.body.style.overflowY = 'auto'
+                appContainer.classList.add('animate-in');
+                muteBtn.classList.add('animate-in');
+            }, 100);
+
+            bgMusic.play().catch((error) => {
+                console.log("Autoplay failed:", error);
+            });
+        }
+        
+        muteBtn.addEventListener('click', () => {
+            bgMusic.muted = !bgMusic.muted;
+            muteBtn.innerHTML = bgMusic.muted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+            muteBtn.style.borderColor = bgMusic.muted ? '#666' : '#8b0000';
+        });
+        
+        document.addEventListener('click', playBgAudio, { once: true });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            ghostCursor({});
+            initializeProfile();
+
+            createGenericCards('.bio-links-grid', CONFIG.links);
+            createCategory('staffExperience', 'Discord', 'fa-brands fa-discord', CONFIG.staffExperience.discord);
+            createCategory('staffExperience', 'Minecraft', 'fa-solid fa-cube', CONFIG.staffExperience.minecraft);
+
+            document.querySelectorAll('.panel-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const sectionId = item.getAttribute('data-section');
+
+                    if (sectionId === 'profileBio') {
+                        window.scrollTo({
+                            top: 0,
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        const targetSection = document.getElementById(sectionId);
+                        if (targetSection) {
+                            const scrollPosition = targetSection.offsetTop - 40;
+                            window.scrollTo({
+                                top: scrollPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            window.addEventListener('scroll', highlightActiveSection);
+            highlightActiveSection();
+        });
+
+    </script>
+
+    <script>
+        function ghostCursor(options) {
+            let hasWrapperEl = options && options.element;
+            let element = hasWrapperEl || document.body;
+
+            let randomDelay = options && options.randomDelay;
+            let minDelay = options && options.minDelay || 5;
+            let maxDelay = options && options.maxDelay || 50;
+            const lifeSpan = options && options.lifeSpan || 40;
+
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+            let cursor = { x: width / 2, y: width / 2 };
+            let particles = [];
+            let canvas, context, animationFrame;
+
+            let baseImage = new Image();
+            if (options && options.image) {
+                baseImage.src = options.image;
+            } else {
+                baseImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAATCAYAAACk9eypAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAhGVYSWZNTQAqAAAACAAFARIAAwAAAAEAAQAAARoABQAAAAEAAABKARsABQAAAAEAAABSASgAAwAAAAEAAgAAh2kABAAAAAEAAABaAAAAAAAAAEgAAAABAAAASAAAAAEAA6ABAAMAAAABAAEAAKACAAQAAAABAAAADKADAAQAAAABAAAAEwAAAAAChpcNAAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JяVHQXRpb24+CiAgICAgIDwvcmRmOkRlc2NiaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABqElEQVQoFY3SPUvDQBgH8BREpRHExYiDgmLFl6WC+AYmWeyLg4i7buJX8DMpOujgyxGvUYeCgzhUQUSKKLUS0+ZyptXh8Z5Ti621ekPyJHl+uftfomhaf9Ei5JyxXKfynyEA6EYcLHpwyflT958GAQ7DTABNHd8EbtDbEH2BD5QEQmi2mM8P/Iq+A0SzszEg-3sPjDnDdVEtQKQbMUidHD3xVzf6A9UDEmEm-8h9KTqTVUjT-vB53aHrCbAPiceYq1dQI1Aqv4EhMll0jzv-Y0yiRgCnLRSYyDQHVoqUXe4uKL9l-L7GXC4vkMhE6eW_AOJs9k583ORDUyXMZ8F5SVHVVnllmPNKyFagAJ5DofaqGXw_gHBYg51dIldkmknY2tguv3jOtHR4-MqAzaraJXbEhqHhcQlwGSOi5pytVQHZLN5s0WNe8HPrLYlFsO20RPHkImxsbmHdLJFI76th7Z4SeuF53hTeFLvhRCJRCTKZKxgdnRDbW-iozFJbBMw14_ElwGYc0egMBMFzT21f5Rog33Z7dX02GBm7WV5ZfT5Nn5bE3zuCDe9UxdTpNvK-5AAAAABJRU5ErkJggg==";
+            }
+
+            const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+            prefersReducedMotion.onchange = () => {
+                if (prefersReducedMotion.matches) {
+                    destroy();
+                } else {
+                    init();
+                }
+            };
+
+            function init() {
+                if (prefersReducedMotion.matches) {
+                    console.log("This browser has prefers reduced motion turned on, so the cursor did not init");
+                    return false;
+                }
+
+                canvas = document.createElement("canvas");
+                context = canvas.getContext("2d");
+                canvas.style.top = "0px";
+                canvas.style.left = "0px";
+                canvas.style.pointerEvents = "none";
+                canvas.style.zIndex = options.zIndex || "9999999999";
+
+                if (hasWrapperEl) {
+                    canvas.style.position = "absolute";
+                    element.appendChild(canvas);
+                    canvas.width = element.clientWidth;
+                    canvas.height = element.clientHeight;
+                } else {
+                    canvas.style.position = "fixed";
+                    document.body.appendChild(canvas);
+                    canvas.width = width;
+                    canvas.height = height;
+                }
+
+                bindEvents();
+                loop();
+            }
+
+            function bindEvents() {
+                element.addEventListener("mousemove", onMouseMove);
+                element.addEventListener("touchmove", onTouchMove, { passive: true });
+                element.addEventListener("touchstart", onTouchMove, { passive: true });
+                window.addEventListener("resize", onWindowResize);
+            }
+
+            function onWindowResize(e) {
+                width = window.innerWidth;
+                height = window.innerHeight;
+
+                if (hasWrapperEl) {
+                    canvas.width = element.clientWidth;
+                    canvas.height = element.clientHeight;
+                } else {
+                    canvas.width = width;
+                    canvas.height = height;
+                }
+            }
+
+            function onTouchMove(e) {
+                if (e.touches.length > 0) {
+                    for (let i = 0; i < e.touches.length; i++) {
+                        addParticle(e.touches[i].clientX, e.touches[i].clientY, baseImage);
+                    }
+                }
+            }
+
+            let getDelay = () => Math.floor(Math.random() * (maxDelay - minDelay + 1)) + minDelay;
+            let lastTimeParticleAdded = Date.now(),
+                interval = getDelay();
+
+            function onMouseMove(e) {
+                if (randomDelay) {
+                    if (lastTimeParticleAdded + interval > Date.now()) return;
+                    lastTimeParticleAdded = Date.now();
+                    interval = getDelay();
+                }
+
+                if (hasWrapperEl) {
+                    const boundingRect = element.getBoundingClientRect();
+                    cursor.x = e.clientX - boundingRect.left;
+                    cursor.y = e.clientY - boundingRect.top;
+                } else {
+                    cursor.x = e.clientX;
+                    cursor.y = e.clientY;
+                }
+
+                addParticle(cursor.x, cursor.y, baseImage);
+            }
+
+            function addParticle(x, y, image) {
+                particles.push(new Particle(x, y, image));
+            }
+
+            function updateParticles() {
+                if (particles.length == 0) {
+                    return;
+                }
+                
+                context.clearRect(0, 0, width, height);
+
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update(context);
+                }
+
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    if (particles[i].lifeSpan < 0) {
+                        particles.splice(i, 1);
+                    }
+                }
+
+                if (particles.length == 0) {
+                    context.clearRect(0, 0, width, height);
+                }
+            }
+
+            function loop() {
+                updateParticles();
+                animationFrame = requestAnimationFrame(loop);
+            }
+
+            function destroy() {
+                canvas.remove();
+                cancelAnimationFrame(animationFrame);
+                element.removeEventListener("mousemove", onMouseMove);
+                element.removeEventListener("touchmove", onTouchMove);
+                element.removeEventListener("touchstart", onTouchMove);
+                window.addEventListener("resize", onWindowResize);
+            };
+
+            function Particle(x, y, image) {
+                this.initialLifeSpan = lifeSpan;
+                this.lifeSpan = lifeSpan;
+                this.position = { x: x, y: y };
+
+                this.image = image;
+
+                this.update = function (context) {
+                    this.lifeSpan--;
+                    const opacity = Math.max(this.lifeSpan / this.initialLifeSpan, 0);
+
+                    context.globalAlpha = opacity;
+                    context.drawImage(this.image, this.position.x, this.position.y);
+                };
+            }
+
+            init();
+
+            return {
+                destroy: destroy
+            }
+        }
+    </script>
+
+</body>
+</html>
