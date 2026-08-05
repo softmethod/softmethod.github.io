@@ -604,32 +604,24 @@
 
         <!-- НАВИГАЦИЯ -->
         <nav class="nav">
-            <button class="active" data-target="bio"><i class="fa-regular fa-user" style="margin-right:6px;"></i> <span data-key="nav_bio">Биография</span></button>
-            <button data-target="staff"><i class="fa-regular fa-briefcase" style="margin-right:6px;"></i> <span data-key="nav_staff">Стафф</span></button>
+            <button class="active" data-target="staff"><i class="fa-solid fa-users" style="margin-right:6px;"></i> <span data-key="nav_staff">Стафф</span></button>
             <button data-target="projects"><i class="fa-regular fa-folder-open" style="margin-right:6px;"></i> <span data-key="nav_projects">Проекты</span></button>
         </nav>
 
-        <!-- БИО -->
-        <section class="section" id="bio">
-            <div class="section-title"><i class="fa-regular fa-user"></i> <span data-key="bio_title">Биография</span></div>
-            <div style="display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;">
-                <span class="bio-text" data-key="bio_text">montegs visual dev</span>
-                <span class="bio-role" id="bioRole" data-key="bio_role">Cheat Hunter &amp; Pc Checker</span>
-            </div>
-        </section>
-
-        <!-- СТАФФ -->
+        <!-- СТАФФ (без биографии) -->
         <section class="section" id="staff">
-            <div class="section-title"><i class="fa-regular fa-briefcase"></i> <span data-key="staff_title">Стафф-опыт</span></div>
+            <div class="section-title"><i class="fa-solid fa-users"></i> <span data-key="staff_title">Стафф-опыт</span></div>
 
-            <div class="staff-group">
-                <div class="group-label" data-key="staff_junior">Начальный состав</div>
-                <div class="grid" id="juniorGrid"></div>
-            </div>
-
+            <!-- Сначала высший состав -->
             <div class="staff-group">
                 <div class="group-label" data-key="staff_senior">Высший стафф</div>
                 <div class="grid" id="seniorGrid"></div>
+            </div>
+
+            <!-- Потом начальный -->
+            <div class="staff-group">
+                <div class="group-label" data-key="staff_junior">Начальный состав</div>
+                <div class="grid" id="juniorGrid"></div>
             </div>
         </section>
 
@@ -666,7 +658,7 @@
                     { name: "HightMine", role: "Admin & HEAD OF SS", year: "2025", color: "#ec5252" },
                 ],
                 projects: [
-                    { name: "Screenshare Club", desc: "Сообщество по скриншерингу", discord: "https://discord.gg/ssclub",
+                    { name: "Screenshare Club", desc: "Сообщество по проверкам", discord: "https://discord.gg/ssclub",
                         site: "https://ssclubs.github.io/" }
                 ]
             };
@@ -674,27 +666,19 @@
             // ---------- ПЕРЕВОДЫ ----------
             const LOCALES = {
                 ru: {
-                    nav_bio: "Биография",
                     nav_staff: "Стафф",
                     nav_projects: "Проекты",
-                    bio_title: "Биография",
-                    bio_text: "montegs visual dev",
-                    bio_role: "Cheat Hunter & Pc Checker",
                     staff_title: "Стафф-опыт",
-                    staff_junior: "Начальный состав",
                     staff_senior: "Высший стафф",
+                    staff_junior: "Начальный состав",
                     projects_title: "Мои проекты",
                 },
                 en: {
-                    nav_bio: "Biography",
                     nav_staff: "Staff",
                     nav_projects: "Projects",
-                    bio_title: "Biography",
-                    bio_text: "montegs visual dev",
-                    bio_role: "Cheat Hunter & Pc Checker",
                     staff_title: "Staff Experience",
-                    staff_junior: "Junior Staff",
                     staff_senior: "Senior Staff",
+                    staff_junior: "Junior Staff",
                     projects_title: "My Projects",
                 }
             };
@@ -719,18 +703,6 @@
                 jr.innerHTML = '';
                 sr.innerHTML = '';
 
-                DATA.junior.forEach(item => {
-                    const card = document.createElement('div');
-                    card.className = 'card';
-                    const color = item.color || '#aaa';
-                    card.innerHTML = `
-                        <div class="cname">${item.name}</div>
-                        <div class="cyear">${item.year || ''}</div>
-                        <div class="crole" style="background:${hexToRgba(color, 0.10)};border-color:${hexToRgba(color, 0.15)};color:${color};">${item.role}</div>
-                    `;
-                    jr.appendChild(card);
-                });
-
                 DATA.senior.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'card';
@@ -741,6 +713,18 @@
                         <div class="crole" style="background:${hexToRgba(color, 0.10)};border-color:${hexToRgba(color, 0.15)};color:${color};">${item.role}</div>
                     `;
                     sr.appendChild(card);
+                });
+
+                DATA.junior.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    const color = item.color || '#aaa';
+                    card.innerHTML = `
+                        <div class="cname">${item.name}</div>
+                        <div class="cyear">${item.year || ''}</div>
+                        <div class="crole" style="background:${hexToRgba(color, 0.10)};border-color:${hexToRgba(color, 0.15)};color:${color};">${item.role}</div>
+                    `;
+                    jr.appendChild(card);
                 });
             }
 
@@ -777,8 +761,6 @@
                         el.textContent = dict[key];
                     }
                 });
-                document.getElementById('subtitle').textContent = dict.bio_role || 'Cheat Hunter & Pc Checker';
-                document.getElementById('bioRole').textContent = dict.bio_role || 'Cheat Hunter & Pc Checker';
 
                 document.querySelectorAll('.lang button').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.lang === lang);
@@ -789,7 +771,6 @@
             function initNav() {
                 const btns = document.querySelectorAll('.nav button');
                 const sections = {
-                    bio: document.getElementById('bio'),
                     staff: document.getElementById('staff'),
                     projects: document.getElementById('projects'),
                 };
@@ -810,7 +791,7 @@
                 const sectionEls = Object.values(sections);
                 window.addEventListener('scroll', () => {
                     const scrollY = window.scrollY + 100;
-                    let active = 'bio';
+                    let active = 'staff';
                     sectionEls.forEach(sec => {
                         const rect = sec.getBoundingClientRect();
                         const offset = rect.top + window.scrollY;
