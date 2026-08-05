@@ -490,9 +490,7 @@
             transition: 0.2s;
             font-weight: 600;
             font-family: 'Manrope', sans-serif;
-        }
-        .project-card .plinks span i {
-            font-size: 0.75rem;
+            cursor: pointer;
         }
         .project-card .plinks span:hover {
             background: rgba(176, 16, 48, 0.12);
@@ -656,8 +654,13 @@
                     { name: "HightMine", role: "Admin & HEAD OF SS", year: "2025", color: "#ec5252" },
                 ],
                 projects: [
-                    { name: "Screenshare Club", desc: "Сообщество по проверкам", discord: "https://discord.gg/ssclub",
-                        site: "https://ssclubs.github.io/" }
+                    { 
+                        name: "Screenshare Club", 
+                        desc: "Сообщество по проверкам",
+                        descEn: "Screenshare Community",
+                        discord: "https://discord.gg/ssclub",
+                        site: "https://ssclubs.github.io/" 
+                    }
                 ]
             };
 
@@ -730,21 +733,42 @@
             function renderProjects() {
                 const grid = document.getElementById('projectsGrid');
                 grid.innerHTML = '';
+                
                 DATA.projects.forEach(p => {
                     const div = document.createElement('div');
                     div.className = 'project-card';
+                    
+                    // Сохраняем ссылки в data-атрибуты
+                    div.dataset.discord = p.discord;
+                    div.dataset.site = p.site;
+                    
+                    const descText = currentLang === 'en' ? p.descEn : p.desc;
+                    
                     div.innerHTML = `
                         <div class="pname">${p.name}</div>
-                        <div class="pdesc">${p.desc}</div>
+                        <div class="pdesc project-desc">${descText}</div>
                         <div class="plinks">
-                            <span><i class="fa-brands fa-discord"></i> discord.gg/ssclub</span>
-                            <span><i class="fa-solid fa-globe"></i> ssclubs.github.io</span>
+                            <span class="link-discord" data-link="${p.discord}"><i class="fa-brands fa-discord"></i> discord.gg/ssclub</span>
+                            <span class="link-site" data-link="${p.discord}"><i class="fa-solid fa-globe"></i> ssclubs.github.io</span>
                         </div>
                     `;
-                    div.addEventListener('click', () => {
+                    
+                    // Клик по карточке открывает Discord
+                    div.addEventListener('click', (e) => {
+                        // Если кликнули по ссылке — не дублируем
+                        if (e.target.closest('.plinks span')) return;
                         window.open(p.discord, '_blank');
-                        setTimeout(() => window.open(p.site, '_blank'), 350);
                     });
+                    
+                    // Отдельные обработчики для ссылок
+                    div.querySelectorAll('.plinks span').forEach(span => {
+                        span.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            const link = span.dataset.link;
+                            if (link) window.open(link, '_blank');
+                        });
+                    });
+                    
                     grid.appendChild(div);
                 });
             }
@@ -753,6 +777,8 @@
             function applyLanguage(lang) {
                 currentLang = lang;
                 const dict = LOCALES[lang];
+                
+                // Перевод заголовков
                 document.querySelectorAll('[data-key]').forEach(el => {
                     const key = el.dataset.key;
                     if (dict[key] !== undefined) {
@@ -760,6 +786,15 @@
                     }
                 });
 
+                // Перевод описания проекта
+                document.querySelectorAll('.project-desc').forEach((el, index) => {
+                    const p = DATA.projects[index];
+                    if (p) {
+                        el.textContent = lang === 'en' ? p.descEn : p.desc;
+                    }
+                });
+
+                // Кнопки языка
                 document.querySelectorAll('.lang button').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.lang === lang);
                 });
@@ -848,7 +883,13 @@
                 initAudio();
 
                 document.querySelectorAll('.lang button').forEach(btn => {
-                    btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+                    btn.addEventListener('click', () => {
+                        applyLanguage(btn.dataset.lang);
+                        // Перерисовываем проекты с новым языком
+                        renderProjects();
+                        // Применяем язык снова, так как renderProjects пересоздаёт элементы
+                        applyLanguage(btn.dataset.lang);
+                    });
                 });
                 applyLanguage('ru');
             });
