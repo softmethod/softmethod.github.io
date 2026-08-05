@@ -44,7 +44,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* фоновая текстура */
         body::before {
             content: '';
             position: fixed;
@@ -64,18 +63,20 @@
             pointer-events: none;
         }
 
-        /* аудио-оверлей */
+        /* АУДИО ОВЕРЛЕЙ — исправлен */
         #bg-start-audio {
             position: fixed;
             inset: 0;
             z-index: 999999;
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(6px);
-            display: flex;
+            display: flex !important;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: opacity 0.35s ease, visibility 0.35s ease;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            opacity: 1;
+            visibility: visible;
         }
         #bg-start-audio.hidden {
             opacity: 0;
@@ -93,6 +94,8 @@
             border: 1px solid rgba(160, 16, 32, 0.3);
             box-shadow: 0 0 40px rgba(160, 16, 32, 0.2);
             transition: all 0.25s;
+            user-select: none;
+            pointer-events: none; /* чтобы клик проходил сквозь текст */
         }
         #bg-start-audio:hover h1 {
             background: rgba(160, 16, 32, 0.18);
@@ -100,7 +103,6 @@
             box-shadow: 0 0 60px rgba(160, 16, 32, 0.3);
         }
 
-        /* кнопка mute */
         #mute-btn {
             position: fixed;
             top: 20px;
@@ -135,7 +137,6 @@
             color: #fff;
         }
 
-        /* прогресс-бар */
         .scroll-progress {
             position: fixed;
             top: 0;
@@ -172,7 +173,6 @@
             transform: translateY(0);
         }
 
-        /* левая панель */
         .left-panel {
             position: sticky;
             top: 28px;
@@ -245,7 +245,6 @@
             color: var(--accent);
         }
 
-        /* основной контент */
         .main-content {
             flex: 1;
             display: flex;
@@ -293,7 +292,6 @@
             font-size: 1.2rem;
         }
 
-        /* профиль */
         .hero-content {
             text-align: center;
         }
@@ -371,7 +369,6 @@
             display: inline-block;
         }
 
-        /* ссылки */
         .bio-links-section {
             margin-top: 2.8rem;
         }
@@ -448,7 +445,6 @@
             letter-spacing: 0.02em;
         }
 
-        /* категории стаффа */
         .staff-category {
             margin-top: 1.8rem;
         }
@@ -478,7 +474,6 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
         }
 
-        /* адаптив */
         @media (max-width: 920px) {
             .app-container {
                 flex-direction: column;
@@ -541,7 +536,6 @@
             }
         }
 
-        /* скролл */
         ::-webkit-scrollbar {
             width: 5px;
             height: 5px;
@@ -564,8 +558,15 @@
 </head>
 <body>
 
-    <div id="bg-start-audio"><h1>✦ нажмите в любом месте ✦</h1></div>
-    <audio id="bg-music" loop preload="auto"><source src="song.mp3" type="audio/mp3"></audio>
+    <!-- ОВЕРЛЕЙ — клик работает по всей области -->
+    <div id="bg-start-audio">
+        <h1>✦ нажмите в любом месте ✦</h1>
+    </div>
+
+    <audio id="bg-music" loop preload="auto">
+        <source src="song.mp3" type="audio/mp3">
+    </audio>
+
     <button id="mute-btn"><i class="fa-solid fa-volume-high"></i></button>
 
     <div class="scroll-progress"><div class="scroll-progress-bar"></div></div>
@@ -583,7 +584,9 @@
                 <div class="hero-content">
                     <div class="profile-wrapper">
                         <div class="profile-border"></div>
-                        <div class="profile-image" id="profileAvatar"><img src="https://i.ibb.co/cXMGtTgv/avatar.png" alt="avatar"></div>
+                        <div class="profile-image" id="profileAvatar">
+                            <img src="https://i.ibb.co/cXMGtTgv/avatar.png" alt="avatar">
+                        </div>
                     </div>
                     <h1 id="profileName">softmethod</h1>
                     <p class="subtitle"><i class="fa-solid fa-magnifying-glass" style="transform:scaleX(-1);"></i> Cheat Hunter &amp; Pc Checker</p>
@@ -604,7 +607,7 @@
 
     <script>
         (function() {
-            // конфиг
+            // ---------- КОНФИГ ----------
             const CONFIG = {
                 profile: {
                     name: "softmethod",
@@ -643,7 +646,7 @@
                 }
             };
 
-            // --- helper ---
+            // ---------- HELPER ----------
             function hexToRgba(hex, alpha = 0.12) {
                 let c = hex.replace('#', '');
                 if (c.length === 3) c = c.split('').map(x => x + x).join('');
@@ -652,7 +655,7 @@
                 return `rgba(${r},${g},${b},${alpha})`;
             }
 
-            // --- рендер ссылок ---
+            // ---------- РЕНДЕР ССЫЛОК ----------
             function renderLinks() {
                 const container = document.getElementById('linksGrid');
                 container.innerHTML = '';
@@ -670,7 +673,7 @@
                 });
             }
 
-            // --- рендер стаффа ---
+            // ---------- РЕНДЕР СТАФФА ----------
             function renderStaff() {
                 const container = document.getElementById('staffContainer');
                 container.innerHTML = '';
@@ -689,7 +692,6 @@
                     cat.data.forEach(server => {
                         const card = document.createElement('div');
                         card.className = 'server-card';
-                        // если есть ссылка, можно добавить, но в конфиге нет — оставим клик без действия
                         const yearHtml = server.year ? `<div class="server-year">${server.year}</div>` : '';
                         const roleColor = server.color || '#aaa';
                         card.innerHTML = `
@@ -706,7 +708,7 @@
                 });
             }
 
-            // --- навигация ---
+            // ---------- НАВИГАЦИЯ ----------
             function initNav() {
                 const items = document.querySelectorAll('.panel-item');
                 const sections = document.querySelectorAll('.section');
@@ -722,7 +724,6 @@
                     });
                 });
 
-                // highlight on scroll
                 function highlight() {
                     const scrollY = window.scrollY + 120;
                     let activeId = 'profileBio';
@@ -739,7 +740,6 @@
                 window.addEventListener('scroll', highlight, { passive: true });
                 highlight();
 
-                // progress bar
                 function updateProgress() {
                     const scrollTop = window.scrollY;
                     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
@@ -750,28 +750,40 @@
                 updateProgress();
             }
 
-            // --- аудио ---
+            // ---------- АУДИО (исправленный клик) ----------
             function initAudio() {
                 const overlay = document.getElementById('bg-start-audio');
                 const muteBtn = document.getElementById('mute-btn');
                 const audio = document.getElementById('bg-music');
+                const appContainer = document.getElementById('appContainer');
+
                 audio.volume = 0.075;
 
-                function startAudio() {
+                function startApp() {
+                    // Скрываем оверлей
                     overlay.classList.add('hidden');
+                    // Показываем кнопку mute
                     muteBtn.classList.add('visible');
-                    document.getElementById('appContainer').classList.add('loaded');
+                    // Загружаем контент
+                    appContainer.classList.add('loaded');
+                    // Запускаем музыку
                     audio.play().catch(() => {});
                 }
 
-                overlay.addEventListener('click', startAudio, { once: true });
-                // если autoplay сработает
+                // Клик по оверлею — главный триггер
+                overlay.addEventListener('click', startApp, { once: true });
+
+                // Также пробуем autoplay, если браузер разрешает
                 audio.play().then(() => {
-                    overlay.classList.add('hidden');
-                    muteBtn.classList.add('visible');
-                    document.getElementById('appContainer').classList.add('loaded');
+                    // если autoplay сработал — скрываем оверлей
+                    if (!overlay.classList.contains('hidden')) {
+                        overlay.classList.add('hidden');
+                        muteBtn.classList.add('visible');
+                        appContainer.classList.add('loaded');
+                    }
                 }).catch(() => {});
 
+                // Mute
                 muteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     audio.muted = !audio.muted;
@@ -780,7 +792,7 @@
                 });
             }
 
-            // --- ghost cursor (упрощённый, лёгкий) ---
+            // ---------- GHOST CURSOR (лёгкий) ----------
             function initGhostCursor() {
                 const canvas = document.createElement('canvas');
                 canvas.style.position = 'fixed';
@@ -797,4 +809,61 @@
                 const MAX_PARTICLES = 18;
 
                 const img = new Image();
-                img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAhGVYSWZNTQAqAAAACAAFARIAAwAAAAEAAQAAARoABQAAAAEAAABKARsABQAAAAEAAABSASgAAwAAAAEAAgAAh2kABAAAAAEAAABaAAAAAAAAAEgAAAABAAAASAAAAAEAA6ABAAMAAAABAAEAAKACAAQAAAABAAAADqADAAQAAAABAAAADgAAAACy01uLAAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABqElEQVQoFY3SPUvDQBgH8BREpRHExYiDgmLFl6WC+AYmWeyLg4i7buJX8DMpOujgyxGvUYeCgzhUQUSKKLUS0+ZyptXh8Z5Ti621ekPyJHl+uftfomhaf9Ei5JyxXKfynyEA6EYcLHpwyflT958GAQ7DTABNHd8EbtDbEH2BD5QEQmi2mM8P/Iq+A0SzszEg+3sPjDnDdVEtQKQbMUidHD3xVzf6A9UDEmEm+8h
+                img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAhGVYSWZNTQAqAAAACAAFARIAAwAAAAEAAQAAARoABQAAAAEAAABKARsABQAAAAEAAABSASgAAwAAAAEAAgAAh2kABAAAAAEAAABaAAAAAAAAAEgAAAABAAAASAAAAAEAA6ABAAMAAAABAAEAAKACAAQAAAABAAAADqADAAQAAAABAAAADgAAAACy01uLAAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABqElEQVQoFY3SPUvDQBgH8BREpRHExYiDgmLFl6WC+AYmWeyLg4i7buJX8DMpOujgyxGvUYeCgzhUQUSKKLUS0+ZyptXh8Z5Ti621ekPyJHl+uftfomhaf9Ei5JyxXKfynyEA6EYcLHpwyflT958GAQ7DTABNHd8EbtDbEH2BD5QEQmi2mM8P/Iq+A0SzszEg+3sPjDnDdVEtQKQbMUidHD3xVzf6A9UDEmEm+8h9KTqTVUjT+vB53aHrCbAPiceYq1dQI1Aqv4EhMll0jzv+Y0yiRgCnLRSYyDQHVoqUXe4uKL9l+L7GXC4vkMhE6eW/AOJs9k583ORDUyXMZ8F5SVHVVnllmPNKyFagAJ5DofaqGXw/gHBYg51dIldkmknY2tguv3jOtHR4+MqAzaraJXbEhqHhcQlwGSOi5pytVQHZLN5s0WNe8HPrLYlFsO20RPHkImxsbmHdLJFI76th7Z4SeuF53hTeFLvhRCJRCTKZKxgdnRDbW+iozFJbBMw14/ElwGYc0egMBMFzT21f5Rog33Z7dX02GBm7WV5ZfT5Nn5bE3zuCDe9UxdTpNvK+5AAAAABJRU5ErkJggg==";
+
+                let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+                let lastTime = 0, interval = 80;
+
+                function addParticle(x, y) {
+                    if (particles.length >= MAX_PARTICLES) particles.shift();
+                    particles.push({ x, y, life: 1.0, decay: 0.02 + Math.random() * 0.02 });
+                }
+
+                function onMove(x, y) {
+                    mouseX = x; mouseY = y;
+                    const now = Date.now();
+                    if (now - lastTime > interval) {
+                        addParticle(x, y);
+                        lastTime = now;
+                    }
+                }
+
+                document.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
+                document.addEventListener('touchmove', (e) => {
+                    if (e.touches.length) onMove(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+
+                function draw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        const p = particles[i];
+                        p.life -= p.decay;
+                        if (p.life <= 0) { particles.splice(i, 1); continue; }
+                        const size = 14 * p.life;
+                        const alpha = p.life * 0.5;
+                        ctx.globalAlpha = alpha;
+                        ctx.drawImage(img, p.x - size/2, p.y - size/2, size, size);
+                    }
+                    ctx.globalAlpha = 1;
+                    requestAnimationFrame(draw);
+                }
+                draw();
+
+                window.addEventListener('resize', () => {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                });
+            }
+
+            // ---------- ЗАПУСК ----------
+            document.addEventListener('DOMContentLoaded', () => {
+                renderLinks();
+                renderStaff();
+                initNav();
+                initAudio();
+                initGhostCursor();
+            });
+        })();
+    </script>
+</body>
+</html>
