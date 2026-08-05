@@ -6,417 +6,589 @@
     <title>softmethod</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap');
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         :root {
-            --bg: #0b0b0b;
-            --card: #121212;
-            --accent: #a01020;
-            --accent-dim: #6a0010;
-            --text: #f0f0f0;
-            --soft: #b0b0b8;
-            --muted: #7a7a82;
+            --bg: #080808;
+            --card: #111318;
+            --card-hover: #191c24;
+            --accent: #b01030;
+            --accent-glow: rgba(176, 16, 48, 0.25);
+            --accent-dim: #6a0018;
+            --text: #eeeef0;
+            --soft: #b8b8c4;
+            --muted: #68687a;
+            --border: rgba(255, 255, 255, 0.04);
+            --radius: 20px;
+            --shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.8);
         }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            padding: 20px;
-            line-height: 1.5;
+            padding: 32px 20px;
+            line-height: 1.6;
             -webkit-font-smoothing: antialiased;
         }
+
         body::before {
             content: '';
             position: fixed;
             inset: 0;
-            background: radial-gradient(circle at 20% 30%, rgba(139, 0, 0, 0.08), transparent 70%),
-                radial-gradient(circle at 80% 70%, rgba(69, 5, 23, 0.10), transparent 60%);
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(176, 16, 48, 0.06), transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(106, 0, 24, 0.08), transparent 60%),
+                radial-gradient(ellipse at 50% 100%, rgba(176, 16, 48, 0.04), transparent 50%);
             z-index: -2;
         }
+
         body::after {
             content: '';
             position: fixed;
             inset: 0;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MCIgaGVpZ2h0PSI4MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBkPSJNMjAgM2wxMCAxMC0xMCAxMC0xMC0xMCAxMC0xMHoiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMykiLz48L3N2Zz4=');
+            background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
             opacity: 0.5;
             z-index: -1;
             pointer-events: none;
         }
 
+        /* ОВЕРЛЕЙ */
         #overlay {
             position: fixed;
             inset: 0;
-            z-index: 999;
-            background: rgba(0, 0, 0, 0.88);
-            backdrop-filter: blur(6px);
+            z-index: 999999;
+            background: rgba(8, 8, 8, 0.92);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: opacity 0.4s, visibility 0.4s;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
         }
         #overlay.hidden {
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
         }
+        #overlay .content {
+            text-align: center;
+            animation: pulseGlow 2.5s ease-in-out infinite;
+        }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                filter: drop-shadow(0 0 20px rgba(176, 16, 48, 0.15));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(176, 16, 48, 0.3));
+            }
+        }
         #overlay h1 {
             font-weight: 300;
-            font-size: 1.5rem;
-            letter-spacing: 4px;
+            font-size: 1.8rem;
+            letter-spacing: 6px;
             color: var(--accent);
-            padding: 0.8rem 2.2rem;
-            border-radius: 60px;
-            border: 1px solid rgba(160, 16, 32, 0.3);
-            background: rgba(160, 16, 32, 0.06);
-            pointer-events: none;
+            border: 1px solid rgba(176, 16, 48, 0.25);
+            padding: 0.9rem 2.8rem;
+            border-radius: 80px;
+            background: rgba(176, 16, 48, 0.04);
+            transition: 0.3s;
             user-select: none;
+            pointer-events: none;
+        }
+        #overlay .sub {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 12px;
+            letter-spacing: 2px;
+            font-weight: 300;
         }
 
+        /* MUTE */
         #mute {
             position: fixed;
-            top: 16px;
-            left: 16px;
-            z-index: 100;
-            background: rgba(18, 18, 18, 0.7);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(160, 16, 32, 0.3);
-            border-radius: 10px;
-            width: 40px;
-            height: 40px;
+            top: 24px;
+            left: 24px;
+            z-index: 9999;
+            background: rgba(17, 19, 24, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(176, 16, 48, 0.2);
+            border-radius: 12px;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #ddd;
+            color: var(--soft);
             font-size: 1.1rem;
             cursor: pointer;
             opacity: 0;
-            transform: scale(0.9);
+            transform: scale(0.85) translateY(-8px);
             pointer-events: none;
-            transition: all 0.25s;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: var(--shadow);
         }
         #mute.visible {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
             pointer-events: auto;
         }
         #mute:hover {
-            background: rgba(160, 16, 32, 0.25);
+            background: rgba(176, 16, 48, 0.2);
             border-color: var(--accent);
+            color: #fff;
         }
 
-        .scroll-bar {
+        /* ПРОГРЕСС */
+        .progress {
             position: fixed;
             top: 0;
             left: 0;
             height: 2px;
             width: 100%;
-            z-index: 100;
+            z-index: 999;
+            background: transparent;
         }
-        .scroll-bar div {
+        .progress .bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--accent-dim), var(--accent));
-            transition: width 0.15s;
+            background: linear-gradient(90deg, var(--accent-dim), var(--accent), var(--accent-dim));
+            transition: width 0.15s ease;
+            box-shadow: 0 0 16px var(--accent-glow);
         }
 
+        /* ОСНОВНОЙ КОНТЕЙНЕР */
         .app {
-            max-width: 1100px;
+            max-width: 1060px;
             width: 100%;
             opacity: 0;
-            transform: translateY(16px);
-            transition: opacity 0.7s, transform 0.7s;
+            transform: translateY(24px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
         }
         .app.loaded {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* компактная шапка */
-        .top {
+        /* ШАПКА */
+        .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
-            background: rgba(18, 18, 18, 0.6);
-            backdrop-filter: blur(8px);
-            border-radius: 18px;
-            padding: 12px 20px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            gap: 16px;
+            background: rgba(17, 19, 24, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius);
+            padding: 16px 24px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
-        .top .profile {
+        .header .profile {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 16px;
         }
-        .top .avatar {
-            width: 48px;
-            height: 48px;
+        .header .avatar {
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
             border: 2px solid var(--accent);
             overflow: hidden;
             flex-shrink: 0;
+            box-shadow: 0 0 30px var(--accent-glow);
         }
-        .top .avatar img {
+        .header .avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-        .top .name {
-            font-weight: 700;
-            font-size: 1.2rem;
-            background: linear-gradient(135deg, #fff 30%, var(--accent));
+        .header .name {
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 20%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .top .sub {
-            font-size: 0.78rem;
+        .header .sub {
+            font-size: 0.8rem;
             color: var(--soft);
+            font-weight: 400;
         }
-        .top .lang {
+
+        .header .lang {
             display: flex;
             gap: 4px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 30px;
-            padding: 3px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 40px;
+            padding: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
-        .top .lang button {
+        .header .lang button {
             background: transparent;
             border: none;
             color: var(--muted);
             font-weight: 600;
             font-size: 0.7rem;
-            padding: 4px 12px;
+            padding: 6px 16px;
             border-radius: 30px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.25s;
             letter-spacing: 0.5px;
         }
-        .top .lang button.active {
+        .header .lang button.active {
             background: var(--accent);
             color: #fff;
+            box-shadow: 0 4px 16px var(--accent-glow);
         }
-        .top .lang button:hover:not(.active) {
+        .header .lang button:hover:not(.active) {
             color: #fff;
         }
 
-        /* навигация */
+        /* НАВИГАЦИЯ */
         .nav {
             display: flex;
             gap: 4px;
-            background: rgba(18, 18, 18, 0.6);
-            backdrop-filter: blur(8px);
+            background: rgba(17, 19, 24, 0.6);
+            backdrop-filter: blur(12px);
             border-radius: 16px;
-            padding: 4px;
-            margin-bottom: 24px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 5px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
             flex-wrap: wrap;
         }
         .nav button {
             background: transparent;
             border: none;
             color: var(--soft);
-            padding: 8px 18px;
+            padding: 10px 26px;
             border-radius: 12px;
             font-size: 0.8rem;
             font-weight: 500;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.25s;
             flex: 1 0 auto;
+            letter-spacing: 0.3px;
         }
         .nav button.active {
-            background: rgba(160, 16, 32, 0.15);
+            background: rgba(176, 16, 48, 0.15);
             color: #fff;
+            box-shadow: inset 0 0 0 1px rgba(176, 16, 48, 0.15);
         }
         .nav button:hover:not(.active) {
             color: #fff;
+            background: rgba(255, 255, 255, 0.03);
         }
 
-        /* секции */
+        /* СЕКЦИИ */
         .section {
-            background: rgba(18, 18, 18, 0.7);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 20px 24px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            scroll-margin-top: 16px;
+            background: rgba(17, 19, 24, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            scroll-margin-top: 20px;
+            transition: border-color 0.3s;
         }
+        .section:hover {
+            border-color: rgba(176, 16, 48, 0.08);
+        }
+
         .section-title {
             font-size: 0.7rem;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             color: var(--muted);
             text-transform: uppercase;
-            margin-bottom: 14px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         .section-title i {
             color: var(--accent);
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
         .bio-text {
             color: var(--soft);
-            font-size: 0.9rem;
-            background: rgba(160, 16, 32, 0.04);
-            padding: 4px 14px;
-            border-radius: 30px;
+            font-size: 0.95rem;
+            background: rgba(176, 16, 48, 0.04);
+            padding: 6px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(176, 16, 48, 0.06);
             display: inline-block;
-            border: 1px solid rgba(160, 16, 32, 0.06);
+        }
+        .bio-role {
+            color: var(--muted);
+            font-size: 0.85rem;
+            margin-left: 8px;
         }
 
-        /* сетки */
+        /* КАРТОЧКИ СТАФФА */
+        .staff-group {
+            margin-bottom: 20px;
+        }
+        .staff-group:last-child {
+            margin-bottom: 0;
+        }
+        .staff-group .group-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+            padding-left: 2px;
+        }
+
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 8px;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 10px;
         }
+
         .card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.04);
             border-radius: 14px;
-            padding: 10px 12px;
+            padding: 14px 12px;
             text-align: center;
-            transition: 0.25s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: default;
+            position: relative;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(176, 16, 48, 0.02), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
         }
         .card:hover {
-            background: rgba(160, 16, 32, 0.05);
-            border-color: rgba(160, 16, 32, 0.15);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(176, 16, 48, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
         }
-        .card .name {
+        .card:hover::before {
+            opacity: 1;
+        }
+        .card .cname {
             font-weight: 600;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
-        .card .role {
+        .card .cyear {
+            font-size: 0.65rem;
+            color: var(--muted);
+            margin-top: 1px;
+        }
+        .card .crole {
             font-size: 0.6rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.04em;
-            padding: 2px 10px;
+            padding: 3px 12px;
             border-radius: 30px;
             display: inline-block;
-            margin-top: 4px;
-            background: rgba(160, 16, 32, 0.08);
+            margin-top: 5px;
+            background: rgba(176, 16, 48, 0.06);
             color: var(--soft);
-            border: 1px solid transparent;
-        }
-        .card .year {
-            font-size: 0.65rem;
-            color: var(--muted);
+            border: 1px solid rgba(255, 255, 255, 0.04);
         }
 
-        .card-link {
-            cursor: pointer;
-        }
-        .card-link:hover {
-            background: rgba(160, 16, 32, 0.08);
-            border-color: var(--accent);
-        }
-
+        /* ПРОЕКТЫ */
         .projects-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
         }
+
         .project-card {
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.04);
-            border-radius: 14px;
-            padding: 14px 16px;
+            border-radius: 16px;
+            padding: 20px 22px;
             text-align: center;
-            transition: 0.25s;
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .project-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            background: radial-gradient(circle at 50% 0%, rgba(176, 16, 48, 0.04), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
         }
         .project-card:hover {
-            background: rgba(160, 16, 32, 0.06);
-            border-color: var(--accent);
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(176, 16, 48, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        .project-card:hover::after {
+            opacity: 1;
         }
         .project-card .pname {
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 1;
         }
         .project-card .pdesc {
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             color: var(--soft);
             margin-top: 2px;
+            position: relative;
+            z-index: 1;
         }
-        .project-card .plink {
+        .project-card .plinks {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+        .project-card .plinks span {
             font-size: 0.65rem;
             color: var(--accent);
-            margin-top: 6px;
-            word-break: break-all;
+            background: rgba(176, 16, 48, 0.06);
+            padding: 2px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(176, 16, 48, 0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: 0.2s;
+        }
+        .project-card .plinks span i {
+            font-size: 0.7rem;
+        }
+        .project-card .plinks span:hover {
+            background: rgba(176, 16, 48, 0.12);
         }
 
-        @media (max-width: 600px) {
-            .top {
+        /* АДАПТИВ */
+        @media (max-width: 700px) {
+            body {
+                padding: 16px 12px;
+            }
+            .header {
+                padding: 14px 18px;
                 flex-direction: column;
                 align-items: stretch;
                 text-align: center;
             }
-            .top .profile {
+            .header .profile {
                 justify-content: center;
             }
-            .top .lang {
+            .header .lang {
                 justify-content: center;
             }
             .nav button {
-                flex: 1 1 80px;
+                padding: 8px 14px;
                 font-size: 0.7rem;
-                padding: 6px 10px;
+                flex: 1 1 60px;
             }
             .section {
-                padding: 16px;
+                padding: 20px 18px;
             }
             .grid {
                 grid-template-columns: 1fr 1fr;
+                gap: 8px;
             }
             .projects-grid {
                 grid-template-columns: 1fr;
             }
+            .card {
+                padding: 12px 8px;
+            }
+            #overlay h1 {
+                font-size: 1.2rem;
+                padding: 0.6rem 1.6rem;
+                letter-spacing: 4px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .section {
+                padding: 16px 12px;
+            }
+            .header .name {
+                font-size: 1.1rem;
+            }
         }
 
         ::selection {
-            background: rgba(160, 16, 32, 0.3);
+            background: rgba(176, 16, 48, 0.3);
             color: #fff;
         }
         ::-webkit-scrollbar {
             width: 4px;
         }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
         ::-webkit-scrollbar-thumb {
             background: var(--accent-dim);
             border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
     </style>
 </head>
 <body>
 
-    <div id="overlay"><h1>✦ нажмите в любом месте ✦</h1></div>
+    <div id="overlay">
+        <div class="content">
+            <h1>✦ нажмите в любом месте ✦</h1>
+            <div class="sub">softmethod · visual dev</div>
+        </div>
+    </div>
 
     <audio id="bgm" loop preload="auto"><source src="song.mp3" type="audio/mp3"></audio>
     <button id="mute"><i class="fa-solid fa-volume-high"></i></button>
 
-    <div class="scroll-bar"><div id="progress"></div></div>
+    <div class="progress"><div class="bar" id="progressBar"></div></div>
 
     <div class="app" id="app">
 
-        <!-- шапка -->
-        <div class="top">
+        <!-- ШАПКА -->
+        <header class="header">
             <div class="profile">
                 <div class="avatar"><img src="https://i.ibb.co/cXMGtTgv/avatar.png" alt="avatar" /></div>
                 <div>
@@ -428,46 +600,44 @@
                 <button class="active" data-lang="ru">RU</button>
                 <button data-lang="en">EN</button>
             </div>
-        </div>
+        </header>
 
-        <!-- навигация -->
-        <div class="nav">
-            <button class="active" data-target="bio">Биография</button>
-            <button data-target="staff">Стафф</button>
-            <button data-target="projects">Проекты</button>
-        </div>
+        <!-- НАВИГАЦИЯ -->
+        <nav class="nav">
+            <button class="active" data-target="bio"><i class="fa-regular fa-user" style="margin-right:6px;"></i> <span data-key="nav_bio">Биография</span></button>
+            <button data-target="staff"><i class="fa-regular fa-briefcase" style="margin-right:6px;"></i> <span data-key="nav_staff">Стафф</span></button>
+            <button data-target="projects"><i class="fa-regular fa-folder-open" style="margin-right:6px;"></i> <span data-key="nav_projects">Проекты</span></button>
+        </nav>
 
         <!-- БИО -->
-        <div class="section" id="bio">
+        <section class="section" id="bio">
             <div class="section-title"><i class="fa-regular fa-user"></i> <span data-key="bio_title">Биография</span></div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px 16px;align-items:center;">
+            <div style="display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;">
                 <span class="bio-text" data-key="bio_text">montegs visual dev</span>
-                <span style="color:var(--muted);font-size:0.8rem;" data-key="bio_role">Cheat Hunter &amp; Pc Checker</span>
+                <span class="bio-role" id="bioRole" data-key="bio_role">Cheat Hunter &amp; Pc Checker</span>
             </div>
-        </div>
+        </section>
 
         <!-- СТАФФ -->
-        <div class="section" id="staff">
+        <section class="section" id="staff">
             <div class="section-title"><i class="fa-regular fa-briefcase"></i> <span data-key="staff_title">Стафф-опыт</span></div>
 
-            <!-- Junior / Middle -->
-            <div style="margin-bottom:16px;">
-                <div style="font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;" data-key="staff_junior">Начальный состав</div>
+            <div class="staff-group">
+                <div class="group-label" data-key="staff_junior">Начальный состав</div>
                 <div class="grid" id="juniorGrid"></div>
             </div>
 
-            <!-- Senior -->
-            <div>
-                <div style="font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;" data-key="staff_senior">Высший стафф</div>
+            <div class="staff-group">
+                <div class="group-label" data-key="staff_senior">Высший стафф</div>
                 <div class="grid" id="seniorGrid"></div>
             </div>
-        </div>
+        </section>
 
         <!-- ПРОЕКТЫ -->
-        <div class="section" id="projects">
+        <section class="section" id="projects">
             <div class="section-title"><i class="fa-regular fa-folder-open"></i> <span data-key="projects_title">Мои проекты</span></div>
             <div class="projects-grid" id="projectsGrid"></div>
-        </div>
+        </section>
 
     </div>
 
@@ -475,35 +645,38 @@
         (function() {
             // ---------- ДАННЫЕ ----------
             const DATA = {
-                // только майнкрафт, две категории
                 junior: [
-                    { name: "CloudyLand", role: "Moder", year: "2022", color: "#0000FF" },
-                    { name: "EasyMoney", role: "Moder", year: "2023", color: "#0000FF" },
-                    { name: "RedBee", role: "Moder & HEAD OF SS", year: "2023", color: "#0000FF" },
-                    { name: "Cristalix", role: "Helper", year: "2025", color: "#FFD700" },
-                    { name: "HolyWorld", role: "Helper", year: "2025", color: "#FFD700" },
-                    { name: "AgeraPvp", role: "Helper", year: "2025", color: "#FFD700" },
+                    { name: "CloudyLand", role: "Moder", year: "2022", color: "#4a8cff" },
+                    { name: "EasyMoney", role: "Moder", year: "2023", color: "#4a8cff" },
+                    { name: "RedBee", role: "Moder & HEAD OF SS", year: "2023", color: "#4a8cff" },
+                    { name: "Cristalix", role: "Helper", year: "2025", color: "#f5c842" },
+                    { name: "HolyWorld", role: "Helper", year: "2025", color: "#f5c842" },
+                    { name: "AgeraPvp", role: "Helper", year: "2025", color: "#f5c842" },
                 ],
                 senior: [
-                    { name: "Revage", role: "Curator & HEAD OF SS", year: "2023-2026", color: "#EC5252" },
+                    { name: "Revage", role: "Curator & HEAD OF SS", year: "2023-2026", color: "#ec5252" },
                     { name: "CakeWorld", role: "Head Admin", year: "2025", color: "#8B0000" },
-                    { name: "BeeMC", role: "Admin & HEAD OF SS", year: "2024", color: "#EC5252" },
-                    { name: "ProxWorld (1)", role: "Curator & HEAD OF SS", year: "2025", color: "#EC5252" },
-                    { name: "ProxWorld (2)", role: "Curator & CHEAT HUNTER", year: "2025", color: "#EC5252" },
-                    { name: "CookieWorld", role: "Admin", year: "2025", color: "#EC5252" },
-                    { name: "SolarCloud", role: "Admin", year: "2025", color: "#EC5252" },
+                    { name: "BeeMC", role: "Admin & HEAD OF SS", year: "2024", color: "#ec5252" },
+                    { name: "ProxWorld (1)", role: "Curator & HEAD OF SS", year: "2025", color: "#ec5252" },
+                    { name: "ProxWorld (2)", role: "Curator & CHEAT HUNTER", year: "2025", color: "#ec5252" },
+                    { name: "CookieWorld", role: "Admin", year: "2025", color: "#ec5252" },
+                    { name: "SolarCloud", role: "Admin", year: "2025", color: "#ec5252" },
                     { name: "PremialClub", role: "Owner & HEAD OF SS", year: "2024", color: "#8B0000" },
                     { name: "PvpCore", role: "Owner & HEAD OF SS", year: "2024", color: "#8B0000" },
-                    { name: "HightMine", role: "Admin & HEAD OF SS", year: "2025", color: "#EC5252" },
+                    { name: "HightMine", role: "Admin & HEAD OF SS", year: "2025", color: "#ec5252" },
                 ],
                 projects: [
-                    { name: "Screenshare Club", desc: "Сообщество по скриншерингу", discord: "https://discord.gg/ssclub", site: "https://ssclubs.github.io/" }
+                    { name: "Screenshare Club", desc: "Сообщество по скриншерингу", discord: "https://discord.gg/ssclub",
+                        site: "https://ssclubs.github.io/" }
                 ]
             };
 
             // ---------- ПЕРЕВОДЫ ----------
             const LOCALES = {
                 ru: {
+                    nav_bio: "Биография",
+                    nav_staff: "Стафф",
+                    nav_projects: "Проекты",
                     bio_title: "Биография",
                     bio_text: "montegs visual dev",
                     bio_role: "Cheat Hunter & Pc Checker",
@@ -511,9 +684,11 @@
                     staff_junior: "Начальный состав",
                     staff_senior: "Высший стафф",
                     projects_title: "Мои проекты",
-                    // для карточек стаффа перевод не нужен — имена и роли остаются
                 },
                 en: {
+                    nav_bio: "Biography",
+                    nav_staff: "Staff",
+                    nav_projects: "Projects",
                     bio_title: "Biography",
                     bio_text: "montegs visual dev",
                     bio_role: "Cheat Hunter & Pc Checker",
@@ -539,21 +714,21 @@
 
             // ---------- РЕНДЕР СТАФФА ----------
             function renderStaff() {
-                const juniorGrid = document.getElementById('juniorGrid');
-                const seniorGrid = document.getElementById('seniorGrid');
-                juniorGrid.innerHTML = '';
-                seniorGrid.innerHTML = '';
+                const jr = document.getElementById('juniorGrid');
+                const sr = document.getElementById('seniorGrid');
+                jr.innerHTML = '';
+                sr.innerHTML = '';
 
                 DATA.junior.forEach(item => {
                     const card = document.createElement('div');
                     card.className = 'card';
                     const color = item.color || '#aaa';
                     card.innerHTML = `
-                        <div class="name">${item.name}</div>
-                        <div class="year">${item.year || ''}</div>
-                        <div class="role" style="background:${hexToRgba(color, 0.12)};border-color:${hexToRgba(color, 0.2)};color:${color};">${item.role}</div>
+                        <div class="cname">${item.name}</div>
+                        <div class="cyear">${item.year || ''}</div>
+                        <div class="crole" style="background:${hexToRgba(color, 0.10)};border-color:${hexToRgba(color, 0.15)};color:${color};">${item.role}</div>
                     `;
-                    juniorGrid.appendChild(card);
+                    jr.appendChild(card);
                 });
 
                 DATA.senior.forEach(item => {
@@ -561,11 +736,11 @@
                     card.className = 'card';
                     const color = item.color || '#aaa';
                     card.innerHTML = `
-                        <div class="name">${item.name}</div>
-                        <div class="year">${item.year || ''}</div>
-                        <div class="role" style="background:${hexToRgba(color, 0.12)};border-color:${hexToRgba(color, 0.2)};color:${color};">${item.role}</div>
+                        <div class="cname">${item.name}</div>
+                        <div class="cyear">${item.year || ''}</div>
+                        <div class="crole" style="background:${hexToRgba(color, 0.10)};border-color:${hexToRgba(color, 0.15)};color:${color};">${item.role}</div>
                     `;
-                    seniorGrid.appendChild(card);
+                    sr.appendChild(card);
                 });
             }
 
@@ -579,13 +754,14 @@
                     div.innerHTML = `
                         <div class="pname">${p.name}</div>
                         <div class="pdesc">${p.desc}</div>
-                        <div class="plink"><i class="fa-brands fa-discord"></i> discord.gg/ssclub</div>
-                        <div class="plink"><i class="fa-solid fa-globe"></i> ssclubs.github.io</div>
+                        <div class="plinks">
+                            <span><i class="fa-brands fa-discord"></i> discord.gg/ssclub</span>
+                            <span><i class="fa-solid fa-globe"></i> ssclubs.github.io</span>
+                        </div>
                     `;
-                    // клик по карточке — открываем ссылки
                     div.addEventListener('click', () => {
                         window.open(p.discord, '_blank');
-                        setTimeout(() => window.open(p.site, '_blank'), 300);
+                        setTimeout(() => window.open(p.site, '_blank'), 350);
                     });
                     grid.appendChild(div);
                 });
@@ -598,23 +774,18 @@
                 document.querySelectorAll('[data-key]').forEach(el => {
                     const key = el.dataset.key;
                     if (dict[key] !== undefined) {
-                        if (el.tagName === 'SPAN' || el.tagName === 'DIV') {
-                            el.textContent = dict[key];
-                        } else {
-                            el.textContent = dict[key];
-                        }
+                        el.textContent = dict[key];
                     }
                 });
-                // обновляем subtitle в шапке
                 document.getElementById('subtitle').textContent = dict.bio_role || 'Cheat Hunter & Pc Checker';
+                document.getElementById('bioRole').textContent = dict.bio_role || 'Cheat Hunter & Pc Checker';
 
-                // кнопки языка
                 document.querySelectorAll('.lang button').forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.lang === lang);
                 });
             }
 
-            // ---------- НАВИГАЦИЯ (скролл) ----------
+            // ---------- НАВИГАЦИЯ ----------
             function initNav() {
                 const btns = document.querySelectorAll('.nav button');
                 const sections = {
@@ -628,7 +799,7 @@
                         const target = btn.dataset.target;
                         const el = sections[target];
                         if (el) {
-                            const top = el.getBoundingClientRect().top + window.scrollY - 20;
+                            const top = el.getBoundingClientRect().top + window.scrollY - 24;
                             window.scrollTo({ top, behavior: 'smooth' });
                         }
                         btns.forEach(b => b.classList.remove('active'));
@@ -636,7 +807,6 @@
                     });
                 });
 
-                // подсветка при скролле
                 const sectionEls = Object.values(sections);
                 window.addEventListener('scroll', () => {
                     const scrollY = window.scrollY + 100;
@@ -649,14 +819,11 @@
                     btns.forEach(b => {
                         b.classList.toggle('active', b.dataset.target === active);
                     });
-                }, { passive: true });
 
-                // прогресс
-                window.addEventListener('scroll', () => {
                     const st = window.scrollY;
                     const dh = document.documentElement.scrollHeight - window.innerHeight;
                     const p = dh > 0 ? (st / dh) * 100 : 0;
-                    document.getElementById('progress').style.width = p + '%';
+                    document.getElementById('progressBar').style.width = p + '%';
                 }, { passive: true });
             }
 
@@ -666,7 +833,7 @@
                 const muteBtn = document.getElementById('mute');
                 const audio = document.getElementById('bgm');
                 const app = document.getElementById('app');
-                audio.volume = 0.07;
+                audio.volume = 0.06;
 
                 function start() {
                     overlay.classList.add('hidden');
@@ -690,6 +857,7 @@
                     audio.muted = !audio.muted;
                     muteBtn.innerHTML = audio.muted ? '<i class="fa-solid fa-volume-xmark"></i>' :
                         '<i class="fa-solid fa-volume-high"></i>';
+                    muteBtn.style.borderColor = audio.muted ? 'rgba(255,255,255,0.06)' : 'rgba(176,16,48,0.2)';
                 });
             }
 
@@ -700,11 +868,8 @@
                 initNav();
                 initAudio();
 
-                // язык
                 document.querySelectorAll('.lang button').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        applyLanguage(btn.dataset.lang);
-                    });
+                    btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
                 });
                 applyLanguage('ru');
             });
