@@ -118,14 +118,44 @@
             -webkit-backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border);
         }
+        .nav-left {
+            display: flex; align-items: center; gap: 12px;
+            position: absolute;
+            left: 1.5rem;
+        }
         .nav-logo {
             font-weight: 900;
             font-size: 0.95rem;
             letter-spacing: -0.02em;
             color: var(--text);
-            position: absolute;
-            left: 1.5rem;
         }
+        .lang-switch {
+            display: flex; gap: 2px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 6px;
+            padding: 2px;
+            border: 1px solid var(--border);
+        }
+        .lang-switch button {
+            background: transparent;
+            border: none;
+            color: var(--text-3);
+            font-weight: 600;
+            font-size: 0.6rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 0.3px;
+            font-family: 'Inter', sans-serif;
+        }
+        .lang-switch button.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .lang-switch button:hover:not(.active) { color: #fff; }
+
         .nav-links {
             display: flex; align-items: center; gap: 6px;
         }
@@ -150,37 +180,6 @@
             border: 1px solid rgba(176,16,48,0.15);
         }
         .nav-pill i { font-size: 0.75rem; }
-
-        /* LANGUAGE SWITCH */
-        .lang-switch {
-            display: flex; gap: 2px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 6px;
-            padding: 2px;
-            margin-left: 8px;
-            border: 1px solid var(--border);
-            position: absolute;
-            right: 1.5rem;
-        }
-        .lang-switch button {
-            background: transparent;
-            border: none;
-            color: var(--text-3);
-            font-weight: 600;
-            font-size: 0.65rem;
-            padding: 4px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: 0.2s;
-            letter-spacing: 0.5px;
-            font-family: 'Inter', sans-serif;
-        }
-        .lang-switch button.active {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 12px var(--accent-glow);
-        }
-        .lang-switch button:hover:not(.active) { color: #fff; }
 
         /* SCROLL BAR */
         .scroll-bar {
@@ -472,14 +471,15 @@
             .links-grid { grid-template-columns: 1fr; }
             .exp-grid { grid-template-columns: 1fr 1fr; }
             .projects-grid { grid-template-columns: 1fr; }
+            .nav-left { position: static; }
             .nav-logo { display: none; }
             #page { padding-top: calc(var(--nav-h) + 28px); }
-            .lang-switch { position: static; margin-left: 4px; }
-            .lang-switch button { font-size: 0.55rem; padding: 3px 8px; }
-            #top-nav { justify-content: space-between; }
+            #top-nav { justify-content: space-between; flex-wrap: wrap; gap: 4px; padding: 4px 12px; height: auto; min-height: var(--nav-h); }
+            .lang-switch button { font-size: 0.5rem; padding: 2px 6px; }
         }
         @media (max-width: 420px) {
             .exp-grid { grid-template-columns: 1fr; }
+            .nav-pill { padding: 4px 10px; font-size: 0.7rem; }
         }
 
         ::selection { background: var(--accent); color: #fff; }
@@ -509,15 +509,17 @@
 
 <!-- NAV -->
 <nav id="top-nav">
-    <span class="nav-logo">softmethod</span>
-    <div class="nav-links">
-        <div class="nav-pill active" data-target="bio"><i class="fa-solid fa-user"></i> <span data-key="nav_bio">Bio</span></div>
-        <div class="nav-pill" data-target="staff-exp"><i class="fa-solid fa-briefcase"></i> <span data-key="nav_staff">Стафф-опыт</span></div>
-        <div class="nav-pill" data-target="projects"><i class="fa-regular fa-folder-open"></i> <span data-key="nav_projects">Проекты</span></div>
+    <div class="nav-left">
+        <span class="nav-logo">softmethod</span>
         <div class="lang-switch">
             <button class="active" data-lang="ru">RU</button>
             <button data-lang="en">EN</button>
         </div>
+    </div>
+    <div class="nav-links">
+        <div class="nav-pill active" data-target="bio"><i class="fa-solid fa-user"></i> <span data-key="nav_bio">Био</span></div>
+        <div class="nav-pill" data-target="staff-exp"><i class="fa-solid fa-briefcase"></i> <span data-key="nav_staff">Стафф-опыт</span></div>
+        <div class="nav-pill" data-target="projects"><i class="fa-regular fa-folder-open"></i> <span data-key="nav_projects">Проекты</span></div>
     </div>
 </nav>
 
@@ -541,13 +543,12 @@
             </p>
 
             <div class="bio-tags">
-                <span class="bio-tag"><strong data-key="age">18</strong> <span data-key="age_label">y/o</span></span>
                 <span class="bio-tag"><strong data-key="lang">RU / EN</strong></span>
             </div>
 
             <!-- LINKS -->
             <div class="links-area">
-                <p class="section-label"><i class="fa-solid fa-link"></i> <span data-key="links">Links</span></p>
+                <p class="section-label"><i class="fa-solid fa-link"></i> <span data-key="links">Ссылки</span></p>
                 <div class="links-grid" id="linksGrid"></div>
             </div>
         </section>
@@ -572,7 +573,7 @@
         <section id="projects">
             <div class="exp-header">
                 <h2 data-key="projects_title">Проекты</h2>
-                <span class="exp-sub" data-key="projects_sub">Сообщества и инструменты</span>
+                <span class="exp-sub" data-key="projects_sub">Сообщества и активный стафф</span>
             </div>
             <div class="projects-grid" id="projectsGrid"></div>
         </section>
@@ -585,6 +586,7 @@
 const DATA = {
     links: [
         { name: "Screenshare Club", handle: "Discord Server", icon: "fa-brands fa-discord", color: "#5865F2", url: "https://discord.gg/ssclub" },
+        { name: "Telegram", handle: "@krowford", icon: "fa-brands fa-telegram", color: "#0088cc", url: null, copy: "@krowford" },
         { name: "Discord", handle: "@softmethod", icon: "fa-brands fa-discord", color: "#5865F2", url: null, copy: "softmethod" }
     ],
     staff: [
@@ -597,8 +599,6 @@ const DATA = {
         { name: "CookieWorld", role: "Admin" },
         { name: "SolarCloud", role: "Admin" },
         { name: "HightMine", role: "Admin & HEAD OF SS" },
-        { name: "PremialClub", role: "Owner & HEAD OF SS" },
-        { name: "PvpCore", role: "Owner & HEAD OF SS" },
         { name: "CloudyLand", role: "Moder" },
         { name: "EasyMoney", role: "Moder" },
         { name: "RedBee", role: "Moder & HEAD OF SS" },
@@ -616,7 +616,7 @@ const DATA = {
         {
             name: "Saturn-X Space",
             desc: "Менеджер проверок / SS Manager",
-            discord: "https://discord.gg/saturnx",
+            discord: "https://discord.gg/SB9d98G7pB",
             site: "#"
         }
     ]
@@ -633,12 +633,20 @@ const ROLE_TRANSLATIONS = {
     'Moder': 'Модератор',
     'Owner': 'Владелец',
     'Head Admin': 'Главный администратор',
+    // Специальные составные
+    'Curator & HEAD OF SS': 'Куратор & Главный проверяющий',
+    'Curator & CHEAT HUNTER': 'Куратор & Главный проверяющий',
+    'Admin & HEAD OF SS': 'Администратор по проверкам',
+    'Moder & HEAD OF SS': 'Модератор & Главный проверяющий',
 };
 
 function translateRole(role, lang) {
     if (lang === 'ru') {
+        // Сначала проверяем точные совпадения
+        if (ROLE_TRANSLATIONS[role]) return ROLE_TRANSLATIONS[role];
+        // Потом частичные
         for (const [eng, rus] of Object.entries(ROLE_TRANSLATIONS)) {
-            if (role.includes(eng)) {
+            if (role.includes(eng) && eng.length > 3) {
                 return role.replace(eng, rus);
             }
         }
@@ -654,15 +662,13 @@ const LOCALES = {
         nav_staff: "Стафф-опыт",
         nav_projects: "Проекты",
         role: "Cheat Hunter · Screenshare Specialist",
-        age: "18",
-        age_label: "лет",
         lang: "RU / EN",
         links: "Ссылки",
         staff_title: "Стафф-опыт",
         staff_sub: "Сервера и должности",
         search_placeholder: "Поиск серверов…",
         projects_title: "Проекты",
-        projects_sub: "Сообщества и инструменты",
+        projects_sub: "Сообщества и активный стафф",
         no_results: "ничего не найдено",
     },
     en: {
@@ -670,15 +676,13 @@ const LOCALES = {
         nav_staff: "Staff Experience",
         nav_projects: "Projects",
         role: "Cheat Hunter · Screenshare Specialist",
-        age: "18",
-        age_label: "y/o",
         lang: "RU / EN",
         links: "Links",
         staff_title: "Staff Experience",
         staff_sub: "Servers & Roles",
         search_placeholder: "Search servers…",
         projects_title: "Projects",
-        projects_sub: "Community & Tools",
+        projects_sub: "Community & Active Staff",
         no_results: "no results found",
     }
 };
@@ -784,7 +788,6 @@ function renderStaff(q = '') {
         grid.appendChild(d);
     });
 
-    // Убираем // showing... — оставляем только если есть поиск
     if (term) {
         const noResults = LOCALES[currentLang].no_results || 'no results found';
         count.textContent = list.length > 0 ? '' : noResults;
