@@ -25,6 +25,7 @@
             --text-3:     #52525b;
             --accent:     #b01030;
             --accent-dim: #6a0018;
+            --accent-glow: rgba(176, 16, 48, 0.25);
             --nav-h:      56px;
         }
 
@@ -124,11 +125,11 @@
             margin-right: auto;
         }
         .nav-links {
-            display: flex; align-items: center; gap: 4px;
+            display: flex; align-items: center; gap: 6px;
         }
         .nav-pill {
-            padding: 6px 14px;
-            border-radius: 100px;
+            padding: 6px 16px;
+            border-radius: 6px;
             font-size: 0.8rem;
             font-weight: 500;
             color: var(--text-2);
@@ -136,14 +137,46 @@
             transition: background 0.2s, color 0.2s;
             display: flex; align-items: center; gap: 6px;
             user-select: none;
+            background: transparent;
+            border: none;
+            font-family: 'Inter', sans-serif;
         }
-        .nav-pill:hover { color: var(--text); }
+        .nav-pill:hover { color: var(--text); background: rgba(255,255,255,0.03); }
         .nav-pill.active {
-            background: var(--bg-3);
+            background: rgba(176,16,48,0.12);
             color: var(--text);
-            border: 1px solid var(--border-2);
+            border: 1px solid rgba(176,16,48,0.15);
         }
         .nav-pill i { font-size: 0.75rem; }
+
+        /* LANGUAGE SWITCH */
+        .lang-switch {
+            display: flex; gap: 2px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 6px;
+            padding: 2px;
+            margin-left: 8px;
+            border: 1px solid var(--border);
+        }
+        .lang-switch button {
+            background: transparent;
+            border: none;
+            color: var(--text-3);
+            font-weight: 600;
+            font-size: 0.65rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+            letter-spacing: 0.5px;
+            font-family: 'Inter', sans-serif;
+        }
+        .lang-switch button.active {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .lang-switch button:hover:not(.active) { color: #fff; }
 
         /* SCROLL BAR */
         .scroll-bar {
@@ -432,6 +465,48 @@
             background: rgba(176,16,48,0.12);
         }
 
+        /* RANKS SECTION */
+        #ranks { scroll-margin-top: calc(var(--nav-h) + 24px); }
+        .ranks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 0.65rem;
+        }
+        .rank-card {
+            background: var(--bg-1);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+            text-align: center;
+            transition: border-color 0.2s, transform 0.2s;
+        }
+        .rank-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .rank-card .rname {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .rank-card .rdesc {
+            font-size: 0.7rem;
+            color: var(--text-3);
+            margin-top: 2px;
+        }
+        .rank-card .rbadge {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            margin-top: 4px;
+            background: rgba(176,16,48,0.06);
+            color: var(--accent);
+            border: 1px solid rgba(176,16,48,0.08);
+        }
+
         /* RESPONSIVE */
         @media (max-width: 700px) {
             body { padding: 16px 12px; }
@@ -439,11 +514,15 @@
             .links-grid { grid-template-columns: 1fr; }
             .exp-grid { grid-template-columns: 1fr 1fr; }
             .projects-grid { grid-template-columns: 1fr; }
+            .ranks-grid { grid-template-columns: 1fr 1fr; }
             .nav-logo { display: none; }
             #page { padding-top: calc(var(--nav-h) + 28px); }
+            .lang-switch { margin-left: 4px; }
+            .lang-switch button { font-size: 0.55rem; padding: 3px 8px; }
         }
         @media (max-width: 420px) {
             .exp-grid { grid-template-columns: 1fr; }
+            .ranks-grid { grid-template-columns: 1fr; }
         }
 
         ::selection { background: var(--accent); color: #fff; }
@@ -475,9 +554,14 @@
 <nav id="top-nav">
     <span class="nav-logo">softmethod</span>
     <div class="nav-links">
-        <div class="nav-pill active" data-target="bio"><i class="fa-solid fa-user"></i> Bio</div>
-        <div class="nav-pill" data-target="experience"><i class="fa-solid fa-briefcase"></i> Staff</div>
-        <div class="nav-pill" data-target="projects"><i class="fa-regular fa-folder-open"></i> Projects</div>
+        <div class="nav-pill active" data-target="bio"><i class="fa-solid fa-user"></i> <span data-key="nav_bio">Bio</span></div>
+        <div class="nav-pill" data-target="ranks"><i class="fa-solid fa-medal"></i> <span data-key="nav_ranks">Ranks</span></div>
+        <div class="nav-pill" data-target="experience"><i class="fa-solid fa-briefcase"></i> <span data-key="nav_staff">Staff</span></div>
+        <div class="nav-pill" data-target="projects"><i class="fa-regular fa-folder-open"></i> <span data-key="nav_projects">Projects</span></div>
+        <div class="lang-switch">
+            <button class="active" data-lang="ru">RU</button>
+            <button data-lang="en">EN</button>
+        </div>
     </div>
 </nav>
 
@@ -495,38 +579,47 @@
 
             <h1 class="hero-name">softmethod</h1>
 
-            <p class="hero-role">
+            <p class="hero-role" id="heroRole">
                 <i class="fa-solid fa-desktop"></i>
-                Cheat Hunter · Screenshare Specialist
+                <span data-key="role">Cheat Hunter · Screenshare Specialist</span>
             </p>
 
             <div class="bio-tags">
-                <span class="bio-tag"><strong>16</strong> y/o</span>
-                <span class="bio-tag"><strong>England</strong>, UK</span>
-                <span class="bio-tag"><strong>English</strong></span>
+                <span class="bio-tag"><strong data-key="age">16</strong> <span data-key="age_label">y/o</span></span>
+                <span class="bio-tag"><strong data-key="country">England</strong>, <span data-key="country_label">UK</span></span>
+                <span class="bio-tag"><strong data-key="lang">English</strong></span>
             </div>
 
             <!-- LINKS -->
             <div class="links-area">
-                <p class="section-label"><i class="fa-solid fa-link"></i> Links</p>
+                <p class="section-label"><i class="fa-solid fa-link"></i> <span data-key="links">Links</span></p>
                 <div class="links-grid" id="linksGrid"></div>
             </div>
+        </section>
+
+        <!-- RANKS -->
+        <section id="ranks">
+            <div class="exp-header">
+                <h2 data-key="ranks_title">Ranks &amp; Achievements</h2>
+                <span class="exp-sub" data-key="ranks_sub">Earned positions</span>
+            </div>
+            <div class="ranks-grid" id="ranksGrid"></div>
         </section>
 
         <!-- EXPERIENCE / STAFF -->
         <section id="experience">
             <div class="exp-header">
-                <h2>Staff Experience</h2>
-                <span class="exp-sub">Senior &amp; Junior</span>
+                <h2 data-key="staff_title">Staff Experience</h2>
+                <span class="exp-sub" data-key="staff_sub">Senior &amp; Junior</span>
             </div>
             <div class="exp-disclaimer">
-                <span class="badge">⚠ Partial record</span>
-                <span class="badge">&lt;50% of total experience</span>
+                <span class="badge" data-key="staff_warn">⚠ Partial record</span>
+                <span class="badge" data-key="staff_pct">&lt;50% of total experience</span>
             </div>
 
             <div class="search-wrap">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input class="exp-search" id="expSearch" type="text" placeholder="Search communities…">
+                <input class="exp-search" id="expSearch" type="text" placeholder="Search communities…" data-key="search_placeholder">
             </div>
 
             <div class="exp-grid" id="expGrid"></div>
@@ -536,8 +629,8 @@
         <!-- PROJECTS -->
         <section id="projects">
             <div class="exp-header">
-                <h2>Projects</h2>
-                <span class="exp-sub">Community &amp; Tools</span>
+                <h2 data-key="projects_title">Projects</h2>
+                <span class="exp-sub" data-key="projects_sub">Community &amp; Tools</span>
             </div>
             <div class="projects-grid" id="projectsGrid"></div>
         </section>
@@ -551,6 +644,14 @@ const DATA = {
     links: [
         { name: "Screenshare Club", handle: "Discord Server", icon: "fa-brands fa-discord", color: "#5865F2", url: "https://discord.gg/ssclub" },
         { name: "Discord", handle: "@softmethod", icon: "fa-brands fa-discord", color: "#5865F2", url: null, copy: "softmethod" }
+    ],
+    ranks: [
+        { name: "SS Manager", desc: "Saturn-X Space", badge: "Head of SS" },
+        { name: "Curator", desc: "Revage · ProxWorld", badge: "Senior Staff" },
+        { name: "Head Admin", desc: "CakeWorld · SolarCloud", badge: "Admin" },
+        { name: "Owner", desc: "PremialClub · PvpCore", badge: "Owner" },
+        { name: "Admin & HEAD OF SS", desc: "BeeMC · HightMine", badge: "Admin" },
+        { name: "Cheat Hunter", desc: "ProxWorld (2)", badge: "Specialist" },
     ],
     senior: [
         { name: "Revage", role: "Curator & HEAD OF SS" },
@@ -578,17 +679,94 @@ const DATA = {
             desc: "Сообщество по проверкам / Screenshare Community",
             discord: "https://discord.gg/ssclub",
             site: "https://ssclubs.github.io/"
+        },
+        {
+            name: "Saturn-X Space",
+            desc: "SS Manager · Screenshare division",
+            discord: "https://discord.gg/saturnx",
+            site: "#"
         }
     ]
 };
 
+// ── LOCALIZATION ─────────────────────────────
+const LOCALES = {
+    ru: {
+        nav_bio: "Bio",
+        nav_ranks: "Ранги",
+        nav_staff: "Стафф",
+        nav_projects: "Проекты",
+        role: "Cheat Hunter · Специалист по скриншерам",
+        age: "16",
+        age_label: "лет",
+        country: "Англия",
+        country_label: "UK",
+        lang: "Английский",
+        links: "Ссылки",
+        ranks_title: "Ранги и достижения",
+        ranks_sub: "Заработанные позиции",
+        staff_title: "Стафф-опыт",
+        staff_sub: "Старший и младший состав",
+        staff_warn: "⚠ Частичная запись",
+        staff_pct: "<50% от всего опыта",
+        search_placeholder: "Поиск сообществ…",
+        projects_title: "Мои проекты",
+        projects_sub: "Сообщества и инструменты",
+    },
+    en: {
+        nav_bio: "Bio",
+        nav_ranks: "Ranks",
+        nav_staff: "Staff",
+        nav_projects: "Projects",
+        role: "Cheat Hunter · Screenshare Specialist",
+        age: "16",
+        age_label: "y/o",
+        country: "England",
+        country_label: "UK",
+        lang: "English",
+        links: "Links",
+        ranks_title: "Ranks & Achievements",
+        ranks_sub: "Earned positions",
+        staff_title: "Staff Experience",
+        staff_sub: "Senior & Junior",
+        staff_warn: "⚠ Partial record",
+        staff_pct: "<50% of total experience",
+        search_placeholder: "Search communities…",
+        projects_title: "My Projects",
+        projects_sub: "Community & Tools",
+    }
+};
+
+let currentLang = 'ru';
+
+function applyLanguage(lang) {
+    currentLang = lang;
+    const dict = LOCALES[lang];
+    document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.dataset.key;
+        if (dict[key] !== undefined) {
+            if (el.tagName === 'INPUT') {
+                el.placeholder = dict[key];
+            } else {
+                el.textContent = dict[key];
+            }
+        }
+    });
+    document.querySelectorAll('.lang-switch button').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+    });
+    // Update project descriptions
+    document.querySelectorAll('.project-desc').forEach((el, i) => {
+        const p = DATA.projects[i];
+        if (p) {
+            el.textContent = lang === 'en' ? p.descEn || p.desc.split('/')[1]?.trim() || p.desc : p.desc.split('/')[0]?.trim() || p.desc;
+        }
+    });
+}
+
 // ── LINKS ──────────────────────────────────────
 function initLinks() {
     const grid = document.getElementById('linksGrid');
-    if (!DATA.links.length) {
-        grid.innerHTML = '<span class="no-links">No links added yet.</span>';
-        return;
-    }
     DATA.links.forEach(item => {
         if (item.copy) {
             const div = document.createElement('div');
@@ -633,6 +811,22 @@ function initLinks() {
     });
 }
 
+// ── RANKS ──────────────────────────────────────
+function renderRanks() {
+    const grid = document.getElementById('ranksGrid');
+    grid.innerHTML = '';
+    DATA.ranks.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'rank-card';
+        div.innerHTML = `
+            <div class="rname">${r.name}</div>
+            <div class="rdesc">${r.desc}</div>
+            <div class="rbadge">${r.badge}</div>
+        `;
+        grid.appendChild(div);
+    });
+}
+
 // ── EXPERIENCE ────────────────────────────────
 function renderExp(q = '') {
     const grid = document.getElementById('expGrid');
@@ -650,8 +844,9 @@ function renderExp(q = '') {
         grid.appendChild(d);
     });
 
+    const label = currentLang === 'ru' ? 'результатов' : 'results';
     count.textContent = term
-        ? `// ${list.length} result${list.length !== 1 ? 's' : ''} for "${q}"`
+        ? `// ${list.length} ${label}${list.length !== 1 ? '' : ''} for "${q}"`
         : `// showing ${list.length} of ${all.length} staff positions`;
 }
 document.getElementById('expSearch').addEventListener('input', e => renderExp(e.target.value));
@@ -660,18 +855,21 @@ document.getElementById('expSearch').addEventListener('input', e => renderExp(e.
 function renderProjects() {
     const grid = document.getElementById('projectsGrid');
     grid.innerHTML = '';
-    DATA.projects.forEach(p => {
+    DATA.projects.forEach((p, i) => {
         const div = document.createElement('div');
         div.className = 'project-card';
+        const descParts = p.desc.split('/');
+        const descRu = descParts[0]?.trim() || p.desc;
+        const descEn = descParts[1]?.trim() || p.desc;
+        const currentDesc = currentLang === 'en' ? descEn : descRu;
         div.innerHTML = `
             <div class="pname">${p.name}</div>
-            <div class="pdesc">${p.desc}</div>
+            <div class="pdesc project-desc">${currentDesc}</div>
             <div class="plinks">
                 <span data-link="${p.discord}"><i class="fa-brands fa-discord"></i> Discord</span>
-                <span data-link="${p.site}"><i class="fa-solid fa-globe"></i> Site</span>
+                ${p.site && p.site !== '#' ? `<span data-link="${p.site}"><i class="fa-solid fa-globe"></i> Site</span>` : ''}
             </div>
         `;
-        // клик по карточке открывает дискорд
         div.addEventListener('click', (e) => {
             if (e.target.closest('.plinks span')) return;
             window.open(p.discord, '_blank');
@@ -680,7 +878,7 @@ function renderProjects() {
             span.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const link = span.dataset.link;
-                if (link) window.open(link, '_blank');
+                if (link && link !== '#') window.open(link, '_blank');
             });
         });
         grid.appendChild(div);
@@ -717,6 +915,15 @@ document.querySelectorAll('.nav-pill').forEach(p => {
     });
 });
 
+// ── LANG SWITCH ───────────────────────────────
+document.querySelectorAll('.lang-switch button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        applyLanguage(btn.dataset.lang);
+        renderProjects();
+        renderExp(document.getElementById('expSearch').value);
+    });
+});
+
 // ── AUDIO + REVEAL ────────────────────────────
 const music = document.getElementById('bg-music');
 const muteBtn = document.getElementById('mute-btn');
@@ -746,8 +953,10 @@ muteBtn.addEventListener('click', e => {
 // ── INIT ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initLinks();
+    renderRanks();
     renderExp();
     renderProjects();
+    applyLanguage('ru');
     onScroll();
 });
 
@@ -779,7 +988,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.clearRect(0, 0, SIZE, SIZE);
         t += 0.016;
 
-        // Outer glow
         const outerGlow = ctx.createRadialGradient(cx, cy, 28, cx, cy, 65);
         outerGlow.addColorStop(0, 'rgba(176,16,48,0.0)');
         outerGlow.addColorStop(0.6, 'rgba(176,16,48,0.08)');
@@ -789,7 +997,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fillStyle = outerGlow;
         ctx.fill();
 
-        // Core
         const core = ctx.createRadialGradient(cx - 8, cy - 8, 2, cx, cy, 28);
         core.addColorStop(0, 'rgba(220,180,255,0.9)');
         core.addColorStop(0.25, 'rgba(176,16,48,0.85)');
@@ -803,7 +1010,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.fill();
         ctx.shadowBlur = 0;
 
-        // Pulse ring
         const pulse = 0.5 + 0.5 * Math.sin(t * 1.8);
         ctx.beginPath();
         ctx.arc(cx, cy, 30 + pulse * 3, 0, Math.PI * 2);
@@ -811,7 +1017,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // Swirl
         SWIRL.forEach(p => {
             p.angle += p.speed;
             const x = cx + Math.cos(p.angle) * p.orbit;
@@ -822,7 +1027,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.fill();
         });
 
-        // Orbiters
         ORBITERS.forEach(p => {
             p.angle += p.speed;
             const wobble = Math.sin(p.angle * 3 + t) * 4;
