@@ -111,6 +111,7 @@
             height: var(--nav-h);
             z-index: 1000;
             display: flex; align-items: center;
+            justify-content: center;
             padding: 0 1.5rem;
             background: rgba(0,0,0,0.75);
             backdrop-filter: blur(14px);
@@ -122,7 +123,8 @@
             font-size: 0.95rem;
             letter-spacing: -0.02em;
             color: var(--text);
-            margin-right: auto;
+            position: absolute;
+            left: 1.5rem;
         }
         .nav-links {
             display: flex; align-items: center; gap: 6px;
@@ -157,6 +159,8 @@
             padding: 2px;
             margin-left: 8px;
             border: 1px solid var(--border);
+            position: absolute;
+            right: 1.5rem;
         }
         .lang-switch button {
             background: transparent;
@@ -308,8 +312,8 @@
         .link-name { font-weight: 700; font-size: 0.85rem; }
         .link-handle { font-size: 0.72rem; color: var(--text-3); margin-top: 1px; }
 
-        /* EXPERIENCE */
-        #experience { scroll-margin-top: calc(var(--nav-h) + 24px); }
+        /* STAFF EXPERIENCE (RANKS) */
+        #staff-exp { scroll-margin-top: calc(var(--nav-h) + 24px); }
 
         .exp-header {
             display: flex;
@@ -378,7 +382,10 @@
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 0.6rem 0.9rem;
-            display: flex; align-items: center; gap: 0.55rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.15rem;
             transition: border-color 0.15s, background 0.15s;
             cursor: default;
         }
@@ -386,24 +393,18 @@
             border-color: var(--accent);
             background: var(--bg-2);
         }
-        .exp-dot {
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            background: var(--accent-dim);
-            flex-shrink: 0;
-            transition: background 0.15s;
+        .exp-item .exp-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
         }
-        .exp-item:hover .exp-dot { background: var(--accent); }
-        .exp-name {
+        .exp-item .exp-role {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.76rem;
-            color: var(--text-2);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-weight: 400;
+            font-size: 0.7rem;
+            color: var(--text-3);
         }
-        .exp-item:hover .exp-name { color: var(--text); }
+        .exp-item:hover .exp-role { color: var(--text-2); }
         .exp-footer {
             margin-top: 1rem;
             font-family: 'JetBrains Mono', monospace;
@@ -465,48 +466,6 @@
             background: rgba(176,16,48,0.12);
         }
 
-        /* RANKS SECTION */
-        #ranks { scroll-margin-top: calc(var(--nav-h) + 24px); }
-        .ranks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 0.65rem;
-        }
-        .rank-card {
-            background: var(--bg-1);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 0.9rem 1rem;
-            text-align: center;
-            transition: border-color 0.2s, transform 0.2s;
-        }
-        .rank-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-        .rank-card .rname {
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-        .rank-card .rdesc {
-            font-size: 0.7rem;
-            color: var(--text-3);
-            margin-top: 2px;
-        }
-        .rank-card .rbadge {
-            font-size: 0.6rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
-            padding: 2px 12px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-top: 4px;
-            background: rgba(176,16,48,0.06);
-            color: var(--accent);
-            border: 1px solid rgba(176,16,48,0.08);
-        }
-
         /* RESPONSIVE */
         @media (max-width: 700px) {
             body { padding: 16px 12px; }
@@ -514,15 +473,14 @@
             .links-grid { grid-template-columns: 1fr; }
             .exp-grid { grid-template-columns: 1fr 1fr; }
             .projects-grid { grid-template-columns: 1fr; }
-            .ranks-grid { grid-template-columns: 1fr 1fr; }
             .nav-logo { display: none; }
             #page { padding-top: calc(var(--nav-h) + 28px); }
-            .lang-switch { margin-left: 4px; }
+            .lang-switch { position: static; margin-left: 4px; }
             .lang-switch button { font-size: 0.55rem; padding: 3px 8px; }
+            #top-nav { justify-content: space-between; }
         }
         @media (max-width: 420px) {
             .exp-grid { grid-template-columns: 1fr; }
-            .ranks-grid { grid-template-columns: 1fr; }
         }
 
         ::selection { background: var(--accent); color: #fff; }
@@ -555,9 +513,8 @@
     <span class="nav-logo">softmethod</span>
     <div class="nav-links">
         <div class="nav-pill active" data-target="bio"><i class="fa-solid fa-user"></i> <span data-key="nav_bio">Bio</span></div>
-        <div class="nav-pill" data-target="ranks"><i class="fa-solid fa-medal"></i> <span data-key="nav_ranks">Ranks</span></div>
-        <div class="nav-pill" data-target="experience"><i class="fa-solid fa-briefcase"></i> <span data-key="nav_staff">Staff</span></div>
-        <div class="nav-pill" data-target="projects"><i class="fa-regular fa-folder-open"></i> <span data-key="nav_projects">Projects</span></div>
+        <div class="nav-pill" data-target="staff-exp"><i class="fa-solid fa-briefcase"></i> <span data-key="nav_staff">Стафф-опыт</span></div>
+        <div class="nav-pill" data-target="projects"><i class="fa-regular fa-folder-open"></i> <span data-key="nav_projects">Проекты</span></div>
         <div class="lang-switch">
             <button class="active" data-lang="ru">RU</button>
             <button data-lang="en">EN</button>
@@ -585,9 +542,8 @@
             </p>
 
             <div class="bio-tags">
-                <span class="bio-tag"><strong data-key="age">16</strong> <span data-key="age_label">y/o</span></span>
-                <span class="bio-tag"><strong data-key="country">England</strong>, <span data-key="country_label">UK</span></span>
-                <span class="bio-tag"><strong data-key="lang">English</strong></span>
+                <span class="bio-tag"><strong data-key="age">18</strong> <span data-key="age_label">y/o</span></span>
+                <span class="bio-tag"><strong data-key="lang_label">Язык</strong> <span data-key="lang">RU / EN</span></span>
             </div>
 
             <!-- LINKS -->
@@ -597,29 +553,20 @@
             </div>
         </section>
 
-        <!-- RANKS -->
-        <section id="ranks">
+        <!-- STAFF EXPERIENCE -->
+        <section id="staff-exp">
             <div class="exp-header">
-                <h2 data-key="ranks_title">Ranks &amp; Achievements</h2>
-                <span class="exp-sub" data-key="ranks_sub">Earned positions</span>
-            </div>
-            <div class="ranks-grid" id="ranksGrid"></div>
-        </section>
-
-        <!-- EXPERIENCE / STAFF -->
-        <section id="experience">
-            <div class="exp-header">
-                <h2 data-key="staff_title">Staff Experience</h2>
-                <span class="exp-sub" data-key="staff_sub">Senior &amp; Junior</span>
+                <h2 data-key="staff_title">Стафф-опыт</h2>
+                <span class="exp-sub" data-key="staff_sub">Сервера и должности</span>
             </div>
             <div class="exp-disclaimer">
-                <span class="badge" data-key="staff_warn">⚠ Partial record</span>
-                <span class="badge" data-key="staff_pct">&lt;50% of total experience</span>
+                <span class="badge" data-key="staff_warn">⚠ Частичная запись</span>
+                <span class="badge" data-key="staff_pct">&lt;50% от всего опыта</span>
             </div>
 
             <div class="search-wrap">
                 <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input class="exp-search" id="expSearch" type="text" placeholder="Search communities…" data-key="search_placeholder">
+                <input class="exp-search" id="expSearch" type="text" placeholder="Поиск серверов…" data-key="search_placeholder">
             </div>
 
             <div class="exp-grid" id="expGrid"></div>
@@ -629,8 +576,8 @@
         <!-- PROJECTS -->
         <section id="projects">
             <div class="exp-header">
-                <h2 data-key="projects_title">Projects</h2>
-                <span class="exp-sub" data-key="projects_sub">Community &amp; Tools</span>
+                <h2 data-key="projects_title">Проекты</h2>
+                <span class="exp-sub" data-key="projects_sub">Сообщества и инструменты</span>
             </div>
             <div class="projects-grid" id="projectsGrid"></div>
         </section>
@@ -645,27 +592,18 @@ const DATA = {
         { name: "Screenshare Club", handle: "Discord Server", icon: "fa-brands fa-discord", color: "#5865F2", url: "https://discord.gg/ssclub" },
         { name: "Discord", handle: "@softmethod", icon: "fa-brands fa-discord", color: "#5865F2", url: null, copy: "softmethod" }
     ],
-    ranks: [
-        { name: "SS Manager", desc: "Saturn-X Space", badge: "Head of SS" },
-        { name: "Curator", desc: "Revage · ProxWorld", badge: "Senior Staff" },
-        { name: "Head Admin", desc: "CakeWorld · SolarCloud", badge: "Admin" },
-        { name: "Owner", desc: "PremialClub · PvpCore", badge: "Owner" },
-        { name: "Admin & HEAD OF SS", desc: "BeeMC · HightMine", badge: "Admin" },
-        { name: "Cheat Hunter", desc: "ProxWorld (2)", badge: "Specialist" },
-    ],
-    senior: [
+    staff: [
+        { name: "Saturn-X Space", role: "SS Manager" },
         { name: "Revage", role: "Curator & HEAD OF SS" },
-        { name: "CakeWorld", role: "Head Admin" },
-        { name: "BeeMC", role: "Admin & HEAD OF SS" },
         { name: "ProxWorld (1)", role: "Curator & HEAD OF SS" },
         { name: "ProxWorld (2)", role: "Curator & CHEAT HUNTER" },
+        { name: "CakeWorld", role: "Head Admin" },
+        { name: "BeeMC", role: "Admin & HEAD OF SS" },
         { name: "CookieWorld", role: "Admin" },
         { name: "SolarCloud", role: "Admin" },
+        { name: "HightMine", role: "Admin & HEAD OF SS" },
         { name: "PremialClub", role: "Owner & HEAD OF SS" },
         { name: "PvpCore", role: "Owner & HEAD OF SS" },
-        { name: "HightMine", role: "Admin & HEAD OF SS" },
-    ],
-    junior: [
         { name: "CloudyLand", role: "Moder" },
         { name: "EasyMoney", role: "Moder" },
         { name: "RedBee", role: "Moder & HEAD OF SS" },
@@ -693,46 +631,38 @@ const DATA = {
 const LOCALES = {
     ru: {
         nav_bio: "Bio",
-        nav_ranks: "Ранги",
-        nav_staff: "Стафф",
+        nav_staff: "Стафф-опыт",
         nav_projects: "Проекты",
-        role: "Cheat Hunter · Специалист по скриншерам",
-        age: "16",
+        role: "Cheat Hunter · Screenshare Specialist",
+        age: "18",
         age_label: "лет",
-        country: "Англия",
-        country_label: "UK",
-        lang: "Английский",
+        lang_label: "Язык",
+        lang: "RU / EN",
         links: "Ссылки",
-        ranks_title: "Ранги и достижения",
-        ranks_sub: "Заработанные позиции",
         staff_title: "Стафф-опыт",
-        staff_sub: "Старший и младший состав",
+        staff_sub: "Сервера и должности",
         staff_warn: "⚠ Частичная запись",
         staff_pct: "<50% от всего опыта",
-        search_placeholder: "Поиск сообществ…",
-        projects_title: "Мои проекты",
+        search_placeholder: "Поиск серверов…",
+        projects_title: "Проекты",
         projects_sub: "Сообщества и инструменты",
     },
     en: {
         nav_bio: "Bio",
-        nav_ranks: "Ranks",
-        nav_staff: "Staff",
+        nav_staff: "Staff Experience",
         nav_projects: "Projects",
         role: "Cheat Hunter · Screenshare Specialist",
-        age: "16",
+        age: "18",
         age_label: "y/o",
-        country: "England",
-        country_label: "UK",
-        lang: "English",
+        lang_label: "Language",
+        lang: "RU / EN",
         links: "Links",
-        ranks_title: "Ranks & Achievements",
-        ranks_sub: "Earned positions",
         staff_title: "Staff Experience",
-        staff_sub: "Senior & Junior",
+        staff_sub: "Servers & Roles",
         staff_warn: "⚠ Partial record",
         staff_pct: "<50% of total experience",
-        search_placeholder: "Search communities…",
-        projects_title: "My Projects",
+        search_placeholder: "Search servers…",
+        projects_title: "Projects",
         projects_sub: "Community & Tools",
     }
 };
@@ -759,7 +689,8 @@ function applyLanguage(lang) {
     document.querySelectorAll('.project-desc').forEach((el, i) => {
         const p = DATA.projects[i];
         if (p) {
-            el.textContent = lang === 'en' ? p.descEn || p.desc.split('/')[1]?.trim() || p.desc : p.desc.split('/')[0]?.trim() || p.desc;
+            const parts = p.desc.split('/');
+            el.textContent = lang === 'en' ? (parts[1]?.trim() || p.desc) : (parts[0]?.trim() || p.desc);
         }
     });
 }
@@ -811,45 +742,31 @@ function initLinks() {
     });
 }
 
-// ── RANKS ──────────────────────────────────────
-function renderRanks() {
-    const grid = document.getElementById('ranksGrid');
-    grid.innerHTML = '';
-    DATA.ranks.forEach(r => {
-        const div = document.createElement('div');
-        div.className = 'rank-card';
-        div.innerHTML = `
-            <div class="rname">${r.name}</div>
-            <div class="rdesc">${r.desc}</div>
-            <div class="rbadge">${r.badge}</div>
-        `;
-        grid.appendChild(div);
-    });
-}
-
-// ── EXPERIENCE ────────────────────────────────
-function renderExp(q = '') {
+// ── STAFF EXPERIENCE ──────────────────────────
+function renderStaff(q = '') {
     const grid = document.getElementById('expGrid');
     const count = document.getElementById('expCount');
     const term = q.toLowerCase().trim();
 
-    const all = [...DATA.senior.map(s => ({ ...s, group: 'senior' })), ...DATA.junior.map(j => ({ ...j, group: 'junior' }))];
-    const list = term ? all.filter(e => e.name.toLowerCase().includes(term)) : all;
+    const list = term ? DATA.staff.filter(e => e.name.toLowerCase().includes(term)) : DATA.staff;
 
     grid.innerHTML = '';
     list.forEach(item => {
         const d = document.createElement('div');
         d.className = 'exp-item';
-        d.innerHTML = `<div class="exp-dot"></div><span class="exp-name" title="${item.name} · ${item.role}">${item.name}</span>`;
+        d.innerHTML = `
+            <div class="exp-name">${item.name}</div>
+            <div class="exp-role">${item.role}</div>
+        `;
         grid.appendChild(d);
     });
 
     const label = currentLang === 'ru' ? 'результатов' : 'results';
     count.textContent = term
         ? `// ${list.length} ${label}${list.length !== 1 ? '' : ''} for "${q}"`
-        : `// showing ${list.length} of ${all.length} staff positions`;
+        : `// showing ${list.length} of ${DATA.staff.length} staff positions`;
 }
-document.getElementById('expSearch').addEventListener('input', e => renderExp(e.target.value));
+document.getElementById('expSearch').addEventListener('input', e => renderStaff(e.target.value));
 
 // ── PROJECTS ──────────────────────────────────
 function renderProjects() {
@@ -858,9 +775,9 @@ function renderProjects() {
     DATA.projects.forEach((p, i) => {
         const div = document.createElement('div');
         div.className = 'project-card';
-        const descParts = p.desc.split('/');
-        const descRu = descParts[0]?.trim() || p.desc;
-        const descEn = descParts[1]?.trim() || p.desc;
+        const parts = p.desc.split('/');
+        const descRu = parts[0]?.trim() || p.desc;
+        const descEn = parts[1]?.trim() || p.desc;
         const currentDesc = currentLang === 'en' ? descEn : descRu;
         div.innerHTML = `
             <div class="pname">${p.name}</div>
@@ -920,7 +837,7 @@ document.querySelectorAll('.lang-switch button').forEach(btn => {
     btn.addEventListener('click', () => {
         applyLanguage(btn.dataset.lang);
         renderProjects();
-        renderExp(document.getElementById('expSearch').value);
+        renderStaff(document.getElementById('expSearch').value);
     });
 });
 
@@ -953,8 +870,7 @@ muteBtn.addEventListener('click', e => {
 // ── INIT ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initLinks();
-    renderRanks();
-    renderExp();
+    renderStaff();
     renderProjects();
     applyLanguage('ru');
     onScroll();
