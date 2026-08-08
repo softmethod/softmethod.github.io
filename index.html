@@ -312,14 +312,14 @@
         .link-name { font-weight: 700; font-size: 0.85rem; }
         .link-handle { font-size: 0.72rem; color: var(--text-3); margin-top: 1px; }
 
-        /* STAFF EXPERIENCE (RANKS) */
+        /* STAFF EXPERIENCE */
         #staff-exp { scroll-margin-top: calc(var(--nav-h) + 24px); }
 
         .exp-header {
             display: flex;
             align-items: baseline;
             gap: 0.75rem;
-            margin-bottom: 0.4rem;
+            margin-bottom: 1.5rem;
         }
         .exp-header h2 {
             font-size: 1.4rem;
@@ -330,19 +330,6 @@
             font-size: 0.75rem;
             color: var(--text-3);
             font-weight: 400;
-        }
-
-        .exp-disclaimer {
-            display: flex; gap: 0.5rem; flex-wrap: wrap;
-            margin-bottom: 1.5rem;
-        }
-        .badge {
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            padding: 3px 12px;
-            font-size: 0.7rem;
-            color: var(--text-3);
         }
 
         .search-wrap {
@@ -374,37 +361,49 @@
 
         .exp-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
-            gap: 0.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.6rem;
         }
         .exp-item {
             background: var(--bg-1);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 0.6rem 0.9rem;
+            border-radius: 10px;
+            padding: 0.7rem 1rem;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 0.15rem;
-            transition: border-color 0.15s, background 0.15s;
+            gap: 0.1rem;
+            transition: border-color 0.2s, background 0.2s, transform 0.15s;
             cursor: default;
+            position: relative;
         }
         .exp-item:hover {
             border-color: var(--accent);
             background: var(--bg-2);
+            transform: translateY(-2px);
         }
         .exp-item .exp-name {
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 700;
             color: var(--text);
+            letter-spacing: -0.01em;
         }
         .exp-item .exp-role {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Inter', sans-serif;
             font-size: 0.7rem;
             color: var(--text-3);
+            font-weight: 500;
+            background: rgba(176,16,48,0.06);
+            padding: 1px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(176,16,48,0.06);
+            margin-top: 2px;
         }
-        .exp-item:hover .exp-role { color: var(--text-2); }
+        .exp-item:hover .exp-role {
+            color: var(--accent);
+            border-color: rgba(176,16,48,0.15);
+        }
         .exp-footer {
             margin-top: 1rem;
             font-family: 'JetBrains Mono', monospace;
@@ -543,7 +542,7 @@
 
             <div class="bio-tags">
                 <span class="bio-tag"><strong data-key="age">18</strong> <span data-key="age_label">y/o</span></span>
-                <span class="bio-tag"><strong data-key="lang_label">Язык</strong> <span data-key="lang">RU / EN</span></span>
+                <span class="bio-tag"><strong data-key="lang">RU / EN</strong></span>
             </div>
 
             <!-- LINKS -->
@@ -558,10 +557,6 @@
             <div class="exp-header">
                 <h2 data-key="staff_title">Стафф-опыт</h2>
                 <span class="exp-sub" data-key="staff_sub">Сервера и должности</span>
-            </div>
-            <div class="exp-disclaimer">
-                <span class="badge" data-key="staff_warn">⚠ Частичная запись</span>
-                <span class="badge" data-key="staff_pct">&lt;50% от всего опыта</span>
             </div>
 
             <div class="search-wrap">
@@ -620,32 +615,55 @@ const DATA = {
         },
         {
             name: "Saturn-X Space",
-            desc: "SS Manager · Screenshare division",
+            desc: "Менеджер проверок / SS Manager",
             discord: "https://discord.gg/saturnx",
             site: "#"
         }
     ]
 };
 
+// ── ROLE TRANSLATIONS ──────────────────────────
+const ROLE_TRANSLATIONS = {
+    'SS Manager': 'Менеджер проверок',
+    'Curator': 'Куратор',
+    'HEAD OF SS': 'Главный проверяющий',
+    'Admin': 'Администратор',
+    'CHEAT HUNTER': 'Главный проверяющий',
+    'Helper': 'Хелпер',
+    'Moder': 'Модератор',
+    'Owner': 'Владелец',
+    'Head Admin': 'Главный администратор',
+};
+
+function translateRole(role, lang) {
+    if (lang === 'ru') {
+        for (const [eng, rus] of Object.entries(ROLE_TRANSLATIONS)) {
+            if (role.includes(eng)) {
+                return role.replace(eng, rus);
+            }
+        }
+        return role;
+    }
+    return role;
+}
+
 // ── LOCALIZATION ─────────────────────────────
 const LOCALES = {
     ru: {
-        nav_bio: "Bio",
+        nav_bio: "Био",
         nav_staff: "Стафф-опыт",
         nav_projects: "Проекты",
         role: "Cheat Hunter · Screenshare Specialist",
         age: "18",
         age_label: "лет",
-        lang_label: "Язык",
         lang: "RU / EN",
         links: "Ссылки",
         staff_title: "Стафф-опыт",
         staff_sub: "Сервера и должности",
-        staff_warn: "⚠ Частичная запись",
-        staff_pct: "<50% от всего опыта",
         search_placeholder: "Поиск серверов…",
         projects_title: "Проекты",
         projects_sub: "Сообщества и инструменты",
+        no_results: "ничего не найдено",
     },
     en: {
         nav_bio: "Bio",
@@ -654,16 +672,14 @@ const LOCALES = {
         role: "Cheat Hunter · Screenshare Specialist",
         age: "18",
         age_label: "y/o",
-        lang_label: "Language",
         lang: "RU / EN",
         links: "Links",
         staff_title: "Staff Experience",
         staff_sub: "Servers & Roles",
-        staff_warn: "⚠ Partial record",
-        staff_pct: "<50% of total experience",
         search_placeholder: "Search servers…",
         projects_title: "Projects",
         projects_sub: "Community & Tools",
+        no_results: "no results found",
     }
 };
 
@@ -690,9 +706,15 @@ function applyLanguage(lang) {
         const p = DATA.projects[i];
         if (p) {
             const parts = p.desc.split('/');
-            el.textContent = lang === 'en' ? (parts[1]?.trim() || p.desc) : (parts[0]?.trim() || p.desc);
+            if (lang === 'ru') {
+                el.textContent = parts[0]?.trim() || p.desc;
+            } else {
+                el.textContent = parts[1]?.trim() || p.desc;
+            }
         }
     });
+    // Re-render staff with translations
+    renderStaff(document.getElementById('expSearch').value);
 }
 
 // ── LINKS ──────────────────────────────────────
@@ -754,17 +776,21 @@ function renderStaff(q = '') {
     list.forEach(item => {
         const d = document.createElement('div');
         d.className = 'exp-item';
+        const translatedRole = translateRole(item.role, currentLang);
         d.innerHTML = `
             <div class="exp-name">${item.name}</div>
-            <div class="exp-role">${item.role}</div>
+            <div class="exp-role">${translatedRole}</div>
         `;
         grid.appendChild(d);
     });
 
-    const label = currentLang === 'ru' ? 'результатов' : 'results';
-    count.textContent = term
-        ? `// ${list.length} ${label}${list.length !== 1 ? '' : ''} for "${q}"`
-        : `// showing ${list.length} of ${DATA.staff.length} staff positions`;
+    // Убираем // showing... — оставляем только если есть поиск
+    if (term) {
+        const noResults = LOCALES[currentLang].no_results || 'no results found';
+        count.textContent = list.length > 0 ? '' : noResults;
+    } else {
+        count.textContent = '';
+    }
 }
 document.getElementById('expSearch').addEventListener('input', e => renderStaff(e.target.value));
 
