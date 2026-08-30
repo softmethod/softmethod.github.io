@@ -55,7 +55,6 @@
                 radial-gradient(ellipse at 80% 50%, rgba(106, 0, 24, 0.08), transparent 60%);
         }
 
-        /* SPLASH */
         #splash {
             position: fixed; inset: 0; z-index: 9999;
             background: #000;
@@ -85,7 +84,6 @@
         @keyframes shimmer { to { background-position: -200% center; } }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* MUTE BTN */
         #mute-btn {
             position: fixed; top: calc(var(--nav-h) / 2);
             right: 1.25rem;
@@ -105,7 +103,6 @@
         #mute-btn.show { opacity: 1; }
         #mute-btn:hover { border-color: var(--text-2); color: var(--text); }
 
-        /* TOP NAV */
         #top-nav {
             position: fixed; top: 0; left: 0; right: 0;
             height: var(--nav-h);
@@ -181,7 +178,6 @@
         }
         .nav-pill i { font-size: 0.75rem; }
 
-        /* SCROLL BAR */
         .scroll-bar {
             position: fixed; top: var(--nav-h); left: 0;
             height: 2px; width: 0%;
@@ -190,7 +186,6 @@
             transition: width 0.15s linear;
         }
 
-        /* PAGE */
         #page {
             max-width: 1060px;
             width: 100%;
@@ -207,7 +202,6 @@
             padding: 0 1.5rem;
         }
 
-        /* HERO */
         #bio {
             display: flex;
             flex-direction: column;
@@ -269,7 +263,6 @@
         }
         .bio-tag strong { color: var(--text); font-weight: 600; }
 
-        /* SECTION LABEL */
         .section-label {
             font-size: 0.7rem;
             font-weight: 700;
@@ -286,7 +279,6 @@
             background: var(--border);
         }
 
-        /* LINKS */
         .links-area { margin-top: 2.5rem; width: 100%; text-align: left; }
         .links-grid {
             display: grid;
@@ -311,7 +303,6 @@
         .link-name { font-weight: 700; font-size: 0.85rem; }
         .link-handle { font-size: 0.72rem; color: var(--text-3); margin-top: 1px; }
 
-        /* STAFF EXPERIENCE */
         #staff-exp { scroll-margin-top: calc(var(--nav-h) + 24px); }
 
         .exp-header {
@@ -464,7 +455,6 @@
             background: rgba(176,16,48,0.12);
         }
 
-        /* RESPONSIVE */
         @media (max-width: 700px) {
             body { padding: 16px 12px; }
             .container { padding: 0 1rem; }
@@ -493,7 +483,6 @@
 
 <canvas id="snow-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
 
-<!-- SPLASH -->
 <div id="splash">
     <h1>softmethod</h1>
     <p>click anywhere</p>
@@ -507,7 +496,6 @@
     <i class="fa-solid fa-volume-high"></i>
 </button>
 
-<!-- NAV -->
 <nav id="top-nav">
     <div class="nav-left">
         <span class="nav-logo">softmethod</span>
@@ -524,12 +512,9 @@
 </nav>
 
 <div class="scroll-bar" id="scroll-bar"></div>
-
-<!-- PAGE -->
 <div id="page">
     <div class="container">
 
-        <!-- BIO -->
         <section id="bio">
             <div class="void-orb-wrap">
                 <canvas id="void-orb" width="130" height="130"></canvas>
@@ -546,14 +531,12 @@
                 <span class="bio-tag"><strong data-key="lang">RU / EN</strong></span>
             </div>
 
-            <!-- LINKS -->
             <div class="links-area">
                 <p class="section-label"><i class="fa-solid fa-link"></i> <span data-key="links">Ссылки</span></p>
                 <div class="links-grid" id="linksGrid"></div>
             </div>
         </section>
 
-        <!-- STAFF EXPERIENCE -->
         <section id="staff-exp">
             <div class="exp-header">
                 <h2 data-key="staff_title">Стафф-опыт</h2>
@@ -569,7 +552,6 @@
             <p class="exp-footer" id="expCount"></p>
         </section>
 
-        <!-- PROJECTS -->
         <section id="projects">
             <div class="exp-header">
                 <h2 data-key="projects_title">Проекты</h2>
@@ -582,7 +564,6 @@
 </div>
 
 <script>
-// ── DATA ──────────────────────────────────────
 const DATA = {
     links: [
         { name: "Screenshare Club", handle: "Discord Server", icon: "fa-brands fa-discord", color: "#5865F2", url: "https://discord.gg/ssclub" },
@@ -622,17 +603,16 @@ const DATA = {
         {
             name: "OneTiers",
             desc: "Screenshare / Screenshare",
-            discord: "#",
+            discord: "https://discord.gg/d8t6HgdJcD",
             site: "#"
         }
     ]
 };
 
-// ── ROLE TRANSLATIONS ──────────────────────────
 const ROLE_TRANSLATIONS = {
     'Screenshare': 'Screenshare',
     'Screenshare': 'Screenshare',
-'Зам. главного администратора': 'Зам. главного администратора',
+'Dep. Chief Administrator': 'Зам. Главного Администратора',
     'Curator': 'Куратор',
     'HEAD OF SS': 'Главный проверяющий',
     'Admin': 'Администратор',
@@ -640,19 +620,17 @@ const ROLE_TRANSLATIONS = {
     'Helper': 'Хелпер',
     'Moder': 'Модератор',
     'Owner': 'Владелец',
-    'Head Admin': 'Главный администратор',
-    // Специальные составные
-    'Curator & HEAD OF SS': 'Куратор & Главный проверяющий',
-    'Curator & CHEAT HUNTER': 'Куратор & Главный проверяющий',
-    'Admin & HEAD OF SS': 'Администратор по проверкам',
-    'Moder & HEAD OF SS': 'Модератор & Главный проверяющий',
+    'Head Admin': 'Главный Администратор',
+
+    'Curator & Head SSer': 'Куратор & Главный проверяющий',
+    'Curator & Cheat Hunter': 'Куратор & Главный проверяющий',
+    'Admin & Head SSER': 'Администратор по проверкам',
+    'Moder & Head SSer': 'Модератор & Главный проверяющий',
 };
 
 function translateRole(role, lang) {
     if (lang === 'ru') {
-        // Сначала проверяем точные совпадения
         if (ROLE_TRANSLATIONS[role]) return ROLE_TRANSLATIONS[role];
-        // Потом частичные
         for (const [eng, rus] of Object.entries(ROLE_TRANSLATIONS)) {
             if (role.includes(eng) && eng.length > 3) {
                 return role.replace(eng, rus);
@@ -663,7 +641,6 @@ function translateRole(role, lang) {
     return role;
 }
 
-// ── LOCALIZATION ─────────────────────────────
 const LOCALES = {
     ru: {
         nav_bio: "Био",
@@ -713,7 +690,6 @@ function applyLanguage(lang) {
     document.querySelectorAll('.lang-switch button').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
     });
-    // Update project descriptions
     document.querySelectorAll('.project-desc').forEach((el, i) => {
         const p = DATA.projects[i];
         if (p) {
@@ -725,11 +701,9 @@ function applyLanguage(lang) {
             }
         }
     });
-    // Re-render staff with translations
     renderStaff(document.getElementById('expSearch').value);
 }
 
-// ── LINKS ──────────────────────────────────────
 function initLinks() {
     const grid = document.getElementById('linksGrid');
     DATA.links.forEach(item => {
@@ -776,7 +750,6 @@ function initLinks() {
     });
 }
 
-// ── STAFF EXPERIENCE ──────────────────────────
 function renderStaff(q = '') {
     const grid = document.getElementById('expGrid');
     const count = document.getElementById('expCount');
@@ -805,7 +778,6 @@ function renderStaff(q = '') {
 }
 document.getElementById('expSearch').addEventListener('input', e => renderStaff(e.target.value));
 
-// ── PROJECTS ──────────────────────────────────
 function renderProjects() {
     const grid = document.getElementById('projectsGrid');
     grid.innerHTML = '';
@@ -838,8 +810,6 @@ function renderProjects() {
         grid.appendChild(div);
     });
 }
-
-// ── NAV + SCROLL ──────────────────────────────
 function onScroll() {
     const scrolled = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const pct = scrolled > 0 ? (window.scrollY / scrolled) * 100 : 0;
@@ -869,7 +839,6 @@ document.querySelectorAll('.nav-pill').forEach(p => {
     });
 });
 
-// ── LANG SWITCH ───────────────────────────────
 document.querySelectorAll('.lang-switch button').forEach(btn => {
     btn.addEventListener('click', () => {
         applyLanguage(btn.dataset.lang);
@@ -878,7 +847,6 @@ document.querySelectorAll('.lang-switch button').forEach(btn => {
     });
 });
 
-// ── AUDIO + REVEAL ────────────────────────────
 const music = document.getElementById('bg-music');
 const muteBtn = document.getElementById('mute-btn');
 const splash = document.getElementById('splash');
@@ -904,7 +872,6 @@ muteBtn.addEventListener('click', e => {
         : 'fa-solid fa-volume-high';
 });
 
-// ── INIT ──────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     initLinks();
     renderStaff();
@@ -913,7 +880,6 @@ document.addEventListener('DOMContentLoaded', () => {
     onScroll();
 });
 
-// ── VOID ORB ──────────────────────────────────
 (function() {
     const canvas = document.getElementById('void-orb');
     const ctx = canvas.getContext('2d');
@@ -999,7 +965,6 @@ document.addEventListener('DOMContentLoaded', () => {
     draw();
 })();
 
-// ── SNOW ──────────────────────────────────────
 (function() {
     const canvas = document.getElementById('snow-canvas');
     const ctx = canvas.getContext('2d');
